@@ -1,4 +1,5 @@
 (ns regarde.web
+  (:import java.io.StringWriter)
   (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :refer [site]]
             [compojure.route :as route]
@@ -9,7 +10,9 @@
             [ring.adapter.jetty :as jetty]
             [ring.middleware.basic-authentication :as basic]
             [cemerick.drawbridge :as drawbridge]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [net.cgrand.enlive-html :as html]
+            [clojure.pprint :as pp]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -20,18 +23,47 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
-(defn list-folks [request]
+(html/deftemplate new-user-template "regarde/templates/new-user.html"
+  []
+  )
+
+(html/defsnippet user-snippet "regarde/templates/users.html"
+  [:li]
+  [username]
+  [:li] (html/content username))
+
+(html/deftemplate users-template "regarde/templates/users.html"
+  [users]
+  [:head :title] (html/content  "Changed title")
+  [:ul] (html/content (map #(user-snippet %) users)))
+
+(def users (atom []))
+
+(defn new-user [request]
+  (new-user-template))
+
+(defn create-user [request]
+  ;; TODO: try swap! on an atom 
+  ;; (let [w (StringWriter.)]
+  ;;   (pp/pprint request w)
+  ;;   (str "<pre>" (.toString w) "</pre>"))
+  (swap! users #(conj %1 (:name (:params request))))
+  "a string is returned for you."
+  )
+
+(defn list-users [request]
+  (users-template @users)
   )
 
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
-       {:status 200
-        :headers {"Content-Type" "text/plain"}
-        :body (pr-str ["Hello" :from 'Heroku])})
-  (GET "/folks" []
-       (regarde.core/folks))
+       list-users)
+  (GET "/users/new" []
+       new-user)
+  (POST "/users" []
+        create-user)
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
