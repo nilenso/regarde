@@ -15,7 +15,8 @@
             [net.cgrand.enlive-html :as html]
             [clojure.pprint :as pp]
             [regarde.models.user :as user]
-            [regarde.db]))
+            [regarde.db]
+            [regarde.models.exercise :as exercise]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -37,10 +38,19 @@
 
 (html/deftemplate users-template "regarde/templates/users.html"
   [users]
-  [:head :title] (html/content  "Changed title")
+  [:head :title] (html/content  "Nilenso | List Of Users")
   [:ul] (html/content (map #(user-snippet %) users)))
 
-(def users (atom []))
+
+(html/defsnippet exercise-snippet "regarde/templates/exercises.html"
+  [:li]
+  [exercise]
+  [:li] (html/content (:name exercise)))
+
+(html/deftemplate exercises-template "regarde/templates/exercises.html"
+  [exercises]
+  [:head :title] (html/content "Nilenso | List of Exercises")
+  [:ul](html/content (map #(exercise-snippet %) exercises)))
 
 (defn new-user [request]
   (new-user-template))
@@ -55,8 +65,11 @@
   )
 
 (defn list-users [request]
-  (users-template (user/list))
-  )
+  (println "heere")
+  (users-template (user/list)))
+
+(defn list-exercises [request]
+  (exercises-template (exercise/list)))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -67,6 +80,8 @@
        new-user)
   (POST "/users" []
         create-user)
+  (GET "/exercises" []
+       list-exercises)
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
