@@ -4,6 +4,8 @@ pom.xml
 /classes/
 /targets/
 /target/
+/regarde-db/
+.lein-repl-history
 .lein-deps-sum
 .lein-env
 .nrepl-port
