@@ -11,7 +11,9 @@
                  [environ "0.2.1"]
                  [expectations "1.4.52"]
                  [enlive "1.1.4"]
-                 [com.cemerick/drawbridge "0.0.6"]]
+                 [com.cemerick/drawbridge "0.0.6"]
+                 [org.clojure/java.jdbc "0.2.3"]
+                 [org.postgresql/postgresql "9.2-1002-jdbc4"]]
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]]
   :hooks [environ.leiningen.hooks]

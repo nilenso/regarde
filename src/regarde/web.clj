@@ -12,7 +12,9 @@
             [cemerick.drawbridge :as drawbridge]
             [environ.core :refer [env]]
             [net.cgrand.enlive-html :as html]
-            [clojure.pprint :as pp]))
+            [clojure.pprint :as pp]
+            [regarde.models.user :as user]
+            [clojure.java.jdbc :as sql]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -29,8 +31,8 @@
 
 (html/defsnippet user-snippet "regarde/templates/users.html"
   [:li]
-  [username]
-  [:li] (html/content username))
+  [user]
+  [:li] (html/content (:name user)))
 
 (html/deftemplate users-template "regarde/templates/users.html"
   [users]
@@ -47,12 +49,11 @@
   ;; (let [w (StringWriter.)]
   ;;   (pp/pprint request w)
   ;;   (str "<pre>" (.toString w) "</pre>"))
-  (swap! users #(conj %1 (:name (:params request))))
-  "a string is returned for you."
+  (user/create-user (:params request))
   )
 
 (defn list-users [request]
-  (users-template @users)
+  (users-template (user/list))
   )
 
 (defroutes app
