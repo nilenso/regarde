@@ -14,7 +14,7 @@
                  [com.cemerick/drawbridge "0.0.6"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [korma "0.3.0-RC6"]
-                 [org.postgresql/postgresql "9.2-1002-jdbc4"]]
+                 [org.postgresql/postgresql "9.3-1100-jdbc4"]]
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]]
   :hooks [environ.leiningen.hooks]

@@ -14,7 +14,8 @@
             [environ.core :refer [env]]
             [net.cgrand.enlive-html :as html]
             [clojure.pprint :as pp]
-            [regarde.models.user :as user]))
+            [regarde.models.user :as user]
+            [regarde.db]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
