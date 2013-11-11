@@ -9,12 +9,12 @@
             [ring.middleware.session.cookie :as cookie]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.basic-authentication :as basic]
+            [ring.util.response :as resp]
             [cemerick.drawbridge :as drawbridge]
             [environ.core :refer [env]]
             [net.cgrand.enlive-html :as html]
             [clojure.pprint :as pp]
-            [regarde.models.user :as user]
-            [clojure.java.jdbc :as sql]))
+            [regarde.models.user :as user]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -50,6 +50,7 @@
   ;;   (pp/pprint request w)
   ;;   (str "<pre>" (.toString w) "</pre>"))
   (user/create-user (:params request))
+  (resp/redirect "/")
   )
 
 (defn list-users [request]
