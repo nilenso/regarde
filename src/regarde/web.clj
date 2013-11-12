@@ -12,11 +12,11 @@
             [ring.util.response :as resp]
             [cemerick.drawbridge :as drawbridge]
             [environ.core :refer [env]]
-            [net.cgrand.enlive-html :as html]
             [clojure.pprint :as pp]
             [regarde.models.user :as user]
             [regarde.db]
-            [regarde.models.exercise :as exercise]))
+            [regarde.models.exercise :as exercise]
+            [regarde.templates :as templates]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -27,32 +27,8 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
-(html/deftemplate new-user-template "regarde/templates/new-user.html" [])
-
-(html/defsnippet user-snippet "regarde/templates/users.html"
-  [:li]
-  [user]
-  [:li] (html/content (:name user)))
-
-(html/deftemplate users-template "regarde/templates/users.html"
-  [users]
-  [:head :title] (html/content  "Nilenso | List Of Users")
-  [:ul] (html/content (map #(user-snippet %) users)))
-
-(html/deftemplate new-exercise-template "regarde/templates/new-exercise.html" [])
-
-(html/defsnippet exercise-snippet "regarde/templates/exercises.html"
-  [:li]
-  [exercise]
-  [:li] (html/content (:name exercise)))
-
-(html/deftemplate exercises-template "regarde/templates/exercises.html"
-  [exercises]
-  [:head :title] (html/content "Nilenso | List of Exercises")
-  [:ul](html/content (map #(exercise-snippet %) exercises)))
-
 (defn new-user [request]
-  (new-user-template))
+  (templates/new-user))
 
 (defn create-user [request]
   ;; TODO: try swap! on an atom 
@@ -63,18 +39,17 @@
   (resp/redirect "/"))
 
 (defn new-exercise [request]
-  (new-exercise-template))
+  (templates/new-exercise))
 
 (defn create-exercise [request]
   (exercise/create-exercise (:params request))
   (resp/redirect "/exercises"))
 
 (defn list-users [request]
-  (println "heere")
-  (users-template (user/list)))
+  (templates/users (user/list)))
 
 (defn list-exercises [request]
-  (exercises-template (exercise/list)))
+  (templates/exercises (exercise/list)))
 
 (defroutes app
   (ANY "/repl" {:as req}
