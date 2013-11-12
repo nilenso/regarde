@@ -16,7 +16,8 @@
             [regarde.models.user :as user]
             [regarde.db]
             [regarde.models.exercise :as exercise]
-            [regarde.templates :as templates]))
+            [regarde.templates :as templates]
+            [authentication]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -51,6 +52,10 @@
 (defn list-exercises [request]
   (templates/exercises (exercise/list)))
 
+(defn find-or-create-user [request]
+  (user/find-or-create-user (authentication/get-google-user request))
+  (resp/redirect "/"))
+
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
@@ -66,6 +71,10 @@
         create-exercise)
   (GET "/exercises" []
        list-exercises)
+  (GET "/sign-in" []
+       (resp/redirect (:uri authentication/auth-req)))
+  (GET "/oauth2callback" []
+       find-or-create-user)
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
