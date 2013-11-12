@@ -27,9 +27,7 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
-(html/deftemplate new-user-template "regarde/templates/new-user.html"
-  []
-  )
+(html/deftemplate new-user-template "regarde/templates/new-user.html" [])
 
 (html/defsnippet user-snippet "regarde/templates/users.html"
   [:li]
@@ -41,6 +39,7 @@
   [:head :title] (html/content  "Nilenso | List Of Users")
   [:ul] (html/content (map #(user-snippet %) users)))
 
+(html/deftemplate new-exercise-template "regarde/templates/new-exercise.html" [])
 
 (html/defsnippet exercise-snippet "regarde/templates/exercises.html"
   [:li]
@@ -61,8 +60,14 @@
   ;;   (pp/pprint request w)
   ;;   (str "<pre>" (.toString w) "</pre>"))
   (user/create-user (:params request))
-  (resp/redirect "/")
-  )
+  (resp/redirect "/"))
+
+(defn new-exercise [request]
+  (new-exercise-template))
+
+(defn create-exercise [request]
+  (exercise/create-exercise (:params request))
+  (resp/redirect "/exercises"))
 
 (defn list-users [request]
   (println "heere")
@@ -78,8 +83,12 @@
        list-users)
   (GET "/users/new" []
        new-user)
+  (GET "/exercises/new" []
+       new-exercise)
   (POST "/users" []
         create-user)
+  (POST "/exercises" []
+        create-exercise)
   (GET "/exercises" []
        list-exercises)
   (ANY "*" []
