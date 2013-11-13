@@ -17,7 +17,7 @@
             [regarde.db]
             [regarde.models.exercise :as exercise]
             [regarde.templates :as templates]
-            [authentication]))
+            [regarde.authentication :as authentication]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
