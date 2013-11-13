@@ -19,9 +19,9 @@
             [regarde.db]
             [regarde.models.exercise :as exercise]
             [regarde.templates :as templates]
-            [authentication]
             [clj-oauth2.client :as oauth2]
-            [clj-oauth2.ring :as oauth2-ring]))
+            [clj-oauth2.ring :as oauth2-ring]
+            [regarde.authentication :as authentication]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -43,10 +43,14 @@
   (resp/redirect "/exercises"))
 
 (defn list-users [request]
-  (templates/users (user/list)))
+  (templates/users (user/all)))
 
 (defn list-exercises [request]
-  (templates/exercises (exercise/list)))
+  (templates/exercises (exercise/all)))
+
+(defn new-exercise-ratings [exercise]
+  (let [users (user/all)]
+    (templates/new-ratings exercise users)))
 
 (defn find-or-create-user [request]
   (user/find-or-create-user (authentication/get-google-user request))
@@ -63,6 +67,10 @@
         create-exercise)
   (GET "/exercises" []
        list-exercises)
+  (GET "/exercises/:id/ratings/new" [id]
+       (let [ex (exercise/find id)]
+         (println ex)
+         (new-exercise-ratings ex)))
   (GET "/sign-in" []
        (resp/redirect (:uri authentication/auth-req)))
   (GET "/oauth2callback" []

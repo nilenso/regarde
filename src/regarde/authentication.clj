@@ -1,4 +1,4 @@
-(ns authentication
+(ns regarde.authentication
   (:require
     [cheshire.core :refer [parse-string]]
     [clj-oauth2.client :as oauth2]

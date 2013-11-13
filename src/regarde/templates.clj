@@ -24,3 +24,8 @@
   [exercises]
   [:head :title] (html/content "Nilenso | List of Exercises")
   [:ul](html/content (map #(exercise-snippet %) exercises)))
+
+(html/deftemplate new-ratings "regarde/templates/new-ratings.html"
+  [exercise users]
+  [:div] (html/content (:name exercise))
+  [:ul] (html/content (map #(user-snippet %) users)))
