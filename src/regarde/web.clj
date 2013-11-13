@@ -91,10 +91,7 @@
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
     (jetty/run-jetty (-> #'app
-                         keyword-params/wrap-keyword-params
-                         params/wrap-params
                          (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
-                         session/wrap-session
                          ((if (env :production)
                             wrap-error-page
                             trace/wrap-stacktrace))
