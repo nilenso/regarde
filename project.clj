@@ -15,7 +15,7 @@
                  [org.clojure/java.jdbc "0.3.0-beta1"]
                  [korma "0.3.0-RC6"]
                  [org.postgresql/postgresql "9.3-1100-jdbc4"]
-                 [stuarth/clj-oauth2 "0.3.2"]]
+                 [nilenso/clj-oauth2 "0.3.3-SNAPSHOT"]]
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]]
   :hooks [environ.leiningen.hooks]
