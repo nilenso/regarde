@@ -6,6 +6,6 @@
 (defn create-user [user-attrs]
   (sql/insert users (sql/values (select-keys user-attrs [:name]))))
 
-(defn list []
+(defn all []
   (sql/select users))
 

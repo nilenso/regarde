@@ -46,10 +46,14 @@
   (resp/redirect "/exercises"))
 
 (defn list-users [request]
-  (templates/users (user/list)))
+  (templates/users (user/all)))
 
 (defn list-exercises [request]
-  (templates/exercises (exercise/list)))
+  (templates/exercises (exercise/all)))
+
+(defn new-exercise-ratings [exercise]
+  (let [users (user/all)]
+    (templates/new-ratings exercise users)))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -66,6 +70,10 @@
         create-exercise)
   (GET "/exercises" []
        list-exercises)
+  (GET "/exercises/:id/ratings/new" [id]
+       (let [ex (exercise/find id)]
+         (println ex)
+         (new-exercise-ratings ex)))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
