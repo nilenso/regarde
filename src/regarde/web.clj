@@ -9,6 +9,8 @@
             [ring.middleware.session.cookie :as cookie]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.basic-authentication :as basic]
+            [ring.middleware.params :as params]
+            [ring.middleware.keyword-params :as keyword-params]
             [ring.util.response :as resp]
             [cemerick.drawbridge :as drawbridge]
             [environ.core :refer [env]]
@@ -17,6 +19,8 @@
             [regarde.db]
             [regarde.models.exercise :as exercise]
             [regarde.templates :as templates]
+            [clj-oauth2.client :as oauth2]
+            [clj-oauth2.ring :as oauth2-ring]
             [regarde.authentication :as authentication]))
 
 (defn- authenticated? [user pass]
@@ -30,14 +34,6 @@
 
 (defn new-user [request]
   (templates/new-user))
-
-(defn create-user [request]
-  ;; TODO: try swap! on an atom 
-  ;; (let [w (StringWriter.)]
-  ;;   (pp/pprint request w)
-  ;;   (str "<pre>" (.toString w) "</pre>"))
-  (user/create-user (:params request))
-  (resp/redirect "/"))
 
 (defn new-exercise [request]
   (templates/new-exercise))
@@ -68,12 +64,8 @@
        (drawbridge req))
   (GET "/" []
        list-users)
-  (GET "/users/new" []
-       new-user)
   (GET "/exercises/new" []
        new-exercise)
-  (POST "/users" []
-        create-user)
   (POST "/exercises" []
         create-exercise)
   (GET "/exercises" []
@@ -103,6 +95,7 @@
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
     (jetty/run-jetty (-> #'app
+                         (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
                          ((if (env :production)
                             wrap-error-page
                             trace/wrap-stacktrace))
@@ -111,5 +104,7 @@
 
 
 ;; For interactive development:
+
 (.stop server)
-(def server (-main))
+(def server (-main 3000))
+

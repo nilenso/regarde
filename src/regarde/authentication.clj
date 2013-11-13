@@ -2,6 +2,7 @@
   (:require
     [cheshire.core :refer [parse-string]]
     [clj-oauth2.client :as oauth2]
+    [clj-oauth2.ring :as oauth2-ring]
     [environ.core :refer [env]]))
 
 (def login-uri
@@ -18,7 +19,13 @@
            "https://www.googleapis.com/auth/userinfo.profile"]
    :grant-type "authorization_code"
    :access-type "online"
-   :approval_prompt ""})
+   :approval_prompt ""
+   :get-state oauth2-ring/get-state-from-session
+   :put-state oauth2-ring/put-state-in-session
+   :get-target oauth2-ring/get-target-from-session
+   :put-target oauth2-ring/put-target-in-session
+   :get-oauth2-data oauth2-ring/get-oauth2-data-from-session
+   :put-oauth2-data oauth2-ring/put-oauth2-data-in-session})
 
 (def auth-req
   (oauth2/make-auth-request google-com-oauth2))
