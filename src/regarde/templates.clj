@@ -8,6 +8,12 @@
   [user]
   [:li] (html/content (:name user)))
 
+(html/defsnippet rating-snippet "regarde/templates/new-ratings.html"
+  [:li]
+  [user exercise]
+  [:li :span] (html/content (:name user))
+  [:li :input] (html/set-attr :name "rating[]" :name (str "rating[" (:id user) "]")))
+
 (html/deftemplate users "regarde/templates/users.html"
   [users]
   [:head :title] (html/content  "Nilenso | List Of Users")
@@ -28,4 +34,4 @@
 (html/deftemplate new-ratings "regarde/templates/new-ratings.html"
   [exercise users]
   [:div] (html/content (:name exercise))
-  [:ul] (html/content (map #(user-snippet %) users)))
+  [:ul] (html/content (map #(rating-snippet % exercise) users)))

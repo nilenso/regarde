@@ -46,6 +46,9 @@
   (exercise/create-exercise (:params request))
   (resp/redirect "/exercises"))
 
+(defn create-ratings [request]
+  (resp/redirect "/"))
+
 (defn list-users [request]
   (templates/users (user/all)))
 
@@ -77,8 +80,9 @@
        list-exercises)
   (GET "/exercises/:id/ratings/new" [id]
        (let [ex (exercise/find id)]
-         (println ex)
          (new-exercise-ratings ex)))
+  (POST "/exercises/:id/ratings" [id]
+        create-ratings)
   (GET "/sign-in" []
        (resp/redirect (:uri authentication/auth-req)))
   (GET "/oauth2callback" []
@@ -107,5 +111,5 @@
 
 
 ;; For interactive development:
-;; (.stop server)
-;; (def server (-main))
+(.stop server)
+(def server (-main))
