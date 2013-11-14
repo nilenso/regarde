@@ -100,5 +100,5 @@
 
 
 ;; For interactive development:
-(.stop server)
+;; (.stop server)
 (def server (-main 3000))
