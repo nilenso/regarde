@@ -23,9 +23,7 @@
                                          [:rating :integer "NOT NULL"])))
 
 (defn drop-tables [db]
-  (j/db-do-commands db (ddl/drop-table :users))
-  (j/db-do-commands db (ddl/drop-table :ratings))
-  (j/db-do-commands db (ddl/drop-table :exercises)))
+  (j/db-do-commands db "DROP TABLE IF EXISTS users, ratings, exercises"))
 
 (defn -main [] 
   (let [db-spec (System/getenv "REGARDE_DATABASE_URL")
