@@ -18,9 +18,15 @@
 (defn create-ratings [db]
   (j/db-do-commands db (ddl/create-table :ratings
                                          [:id :serial "PRIMARY KEY"]
-                                         [:user_id :integer "NOT NULL"]
-                                         [:exercise_id :integer "NOT NULL"]
+                                         [:user_id :integer "NOT NULL"];; rated user
+                                         [:set_id :integer "NOT NULL"]
                                          [:rating :integer "NOT NULL"])))
+
+(defn create-rating-set [db]
+  (j/db-do-commands db (ddl/create-table :rating_sets
+                                         [:id :serial "PRIMARY KEY"]
+                                         [:exercise_id :integer "NOT NULL"]
+                                         [:user_id :integer "NOT NULL"]))) ;; current user
 
 (defn drop-tables [db]
   (j/db-do-commands db "DROP TABLE IF EXISTS users, ratings, exercises"))
@@ -37,6 +43,9 @@
     (println "Creating database structure...")
     (create-users db)
     (println "Created users")
+    (println "Creating Rating Sets")
+    (create-rating-set db)
+    (println "Created Rating Sets")
     (println "Creating ratings")
     (create-ratings db)
     (println "Created ratings")

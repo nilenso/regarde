@@ -1,5 +1,6 @@
 (ns regarde.templates
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html]
+            [regarde.models.exercise :as exercise]))
 
 (html/deftemplate new-user "regarde/templates/new-user.html" [])
 
@@ -35,3 +36,10 @@
   [exercise users]
   [:div] (html/content (:name exercise))
   [:ul] (html/content (map #(rating-snippet % exercise) users)))
+
+(html/deftemplate exercise "regarde/templates/exercise.html"
+  [exercise users]
+  [:p :span] (html/content (:name exercise))
+  [:p :b] (html/content (if (exercise/complete? exercise users)
+                          "Average Ratings are being calculated"
+                          "This exercise is still in progress")))

@@ -17,6 +17,7 @@
             [clojure.pprint :as pp]
             [regarde.models.user :as user]
             [regarde.models.rating :as rating]
+            [regarde.models.rating-set :as rating-set]
             [regarde.db]
             [regarde.models.exercise :as exercise]
             [regarde.templates :as templates]
@@ -44,9 +45,10 @@
   (resp/redirect "/exercises"))
 
 (defn create-ratings [request]
-  (let [[exercise ratings] [(exercise/find (:id (:params request))) (:rating (:params request))]]
-    (doseq [r ratings]
-      (rating/update-or-create exercise (first r) (second r))))
+  (let [current-user (:current-user (:session request))]
+    (let [set (rating-set/find-or-create (:id current-user) (:id (:params request))) ]
+      (doseq [r (:rating (:params request))]
+        (rating/update-or-create set (first r) (second r)))))
   (resp/redirect "/"))
 
 (defn list-users [request]
@@ -60,8 +62,12 @@
     (templates/new-ratings exercise users)))
 
 (defn find-or-create-user [request]
-  (user/find-or-create-user (authentication/get-google-user request))
-  (resp/redirect "/"))
+  (let [current-user (user/find-or-create-user (authentication/get-google-user request))]
+    (assoc (resp/redirect "/") :session {:current-user current-user})))
+
+(defn show-exercise [exercise]
+  (let [users (user/all)]
+    (templates/exercise exercise users)))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -74,6 +80,9 @@
         create-exercise)
   (GET "/exercises" []
        list-exercises)
+  (GET "/exercises/:id" [id]
+       (let [ex (exercise/find id)]
+         (show-exercise ex)))
   (GET "/exercises/:id/ratings/new" [id]
        (let [ex (exercise/find id)]
          (new-exercise-ratings ex)))
@@ -99,7 +108,7 @@
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
     (jetty/run-jetty (-> #'app
-                         (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
+                         ;; (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
                          ((if (env :production)
                             wrap-error-page
                             trace/wrap-stacktrace))
