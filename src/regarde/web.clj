@@ -48,7 +48,7 @@
   (resp/redirect "/exercises"))
 
 (defn create-ratings [request]
-  (let [current-user (:current-user (:session request))]
+  (let [current-user (current-user request)]
     (let [set (rating-set/find-or-create (:id current-user) (:id (:params request))) ]
       (doseq [r (:rating (:params request))]
         (rating/update-or-create set (first r) (second r)))))

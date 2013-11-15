@@ -26,7 +26,8 @@
 (html/defsnippet exercise-snippet "regarde/templates/exercises.html"
   [:li]
   [exercise]
-  [:li] (html/content (:name exercise)))
+  [:li :a] (html/content (:name exercise))
+  [:li :a] (html/set-attr :href (str "/exercises/" (:id exercise))))
 
 (html/deftemplate exercises "regarde/templates/exercises.html"
   [exercises]
