@@ -1,12 +1,9 @@
 (ns regarde.models.user
-  (:require [korma.core :as sql]))
+  (:require [korma.core :as sql]
+            [regarde.models.rating-set]))
 
 (sql/defentity users
   (sql/has-many regarde.models.rating-set/rating-sets))
-
-(defn create-user [user-attrs]
-  (let [created-user-id (sql/insert users (sql/values (select-keys user-attrs [:name :email])))]
-    (find created-user-id)))
 
 (defn all []
   (sql/select users))
@@ -17,6 +14,10 @@
 (defn find [id]
   (first (sql/select users
                      (sql/where {:id (Integer. id)}))))
+
+(defn create-user [user-attrs]
+  (let [created-user-id (sql/insert users (sql/values (select-keys user-attrs [:name :email])))]
+    (find created-user-id)))
 
 (defn rate [exercise user rating]
   (println "rating user" (:email user) " with rating : " rating "for exercise" (:name exercise)))
@@ -29,5 +30,5 @@
 (defn completed [exercise]
   (sql/select users
               (sql/with regarde.models.rating-set/rating-sets)
-              (sql/join regarde.models.rating-set/rating-sets (= :rating-sets.user_id :id))
-              (sql/where {:rating-sets.exercise_id (:id exercise)})))
+              (sql/join regarde.models.rating-set/rating-sets (= :rating_sets.users_id :id))
+              (sql/where {:rating_sets.exercise_id (:id exercise)})))

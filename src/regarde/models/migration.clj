@@ -18,7 +18,7 @@
 (defn create-ratings [db]
   (j/db-do-commands db (ddl/create-table :ratings
                                          [:id :serial "PRIMARY KEY"]
-                                         [:user_id :integer "NOT NULL"];; rated user
+                                         [:users_id :integer "NOT NULL"];; rated user
                                          [:set_id :integer "NOT NULL"]
                                          [:rating :integer "NOT NULL"])))
 
@@ -26,10 +26,10 @@
   (j/db-do-commands db (ddl/create-table :rating_sets
                                          [:id :serial "PRIMARY KEY"]
                                          [:exercise_id :integer "NOT NULL"]
-                                         [:user_id :integer "NOT NULL"]))) ;; current user
+                                         [:users_id :integer "NOT NULL"]))) ;; current user
 
 (defn drop-tables [db]
-  (j/db-do-commands db "DROP TABLE IF EXISTS users, ratings, exercises"))
+  (j/db-do-commands db "DROP TABLE IF EXISTS users, ratings, rating_sets, exercises"))
 
 (defn -main [] 
   (let [db-spec (System/getenv "REGARDE_DATABASE_URL")
