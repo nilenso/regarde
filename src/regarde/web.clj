@@ -32,6 +32,9 @@
       (session/wrap-session)
       (basic/wrap-basic-authentication authenticated?)))
 
+(defn current-user [request]
+  (user/find-user (authentication/get-google-user request)))
+
 (defn new-user [request]
   (templates/new-user))
 
@@ -43,7 +46,7 @@
   (resp/redirect "/exercises"))
 
 (defn list-users [request]
-  (templates/users (user/all)))
+  (templates/users (user/all) (current-user request)))
 
 (defn list-exercises [request]
   (templates/exercises (exercise/all)))
@@ -51,10 +54,6 @@
 (defn new-exercise-ratings [exercise]
   (let [users (user/all)]
     (templates/new-ratings exercise users)))
-
-(defn find-or-create-user [request]
-  (user/find-or-create-user (authentication/get-google-user request))
-  (resp/redirect "/"))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -73,8 +72,6 @@
          (new-exercise-ratings ex)))
   (GET "/sign-in" []
        (resp/redirect (:uri authentication/auth-req)))
-  (GET "/oauth2callback" []
-       find-or-create-user)
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
@@ -86,18 +83,24 @@
             :headers {"Content-Type" "text/html"}
             :body (slurp (io/resource "500.html"))}))))
 
+(defn wrap-find-or-create-user [handler]
+  (fn [request]
+    (when (:oauth2 (:session request))
+        (user/find-or-create-user (authentication/get-google-user request)))
+    (handler request)))
+
 (defn -main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
     (jetty/run-jetty (-> #'app
                          (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
+                         (wrap-find-or-create-user)
                          ((if (env :production)
                             wrap-error-page
                             trace/wrap-stacktrace))
                          (site {:session {:store store}}))
                      {:port port :join? false})))
-
 
 ;; For interactive development:
 (.stop server)
