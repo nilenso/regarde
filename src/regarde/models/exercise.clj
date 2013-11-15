@@ -1,5 +1,6 @@
 (ns regarde.models.exercise
-  (:require [korma.core :as sql]))
+  (:require [korma.core :as sql]
+            [regarde.models.rating]))
 
 (sql/defentity exercises)
 
