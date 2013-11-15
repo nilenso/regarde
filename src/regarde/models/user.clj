@@ -1,23 +1,16 @@
 (ns regarde.models.user
   (:require [korma.core :as sql]
-            [regarde.models.rating-set]))
-
-(sql/defentity users
-  (sql/has-many regarde.models.rating-set/rating-sets))
+            [regarde.models.entities :as entities]))
 
 (defn all []
-  (sql/select users))
+  (sql/select entities/users))
 
 (defn find-user [user-attrs]
-  (when-let [user (first (-> (sql/select* users) (sql/where {:email (:email user-attrs)}) (sql/exec)))] user))
-
-(defn find [id]
-  (first (sql/select users
-                     (sql/where {:id (Integer. id)}))))
+  (when-let [user (first (sql/select entities/users
+                                      (sql/where {:email (:email user-attrs)})))] user))
 
 (defn create-user [user-attrs]
-  (let [created-user-id (sql/insert users (sql/values (select-keys user-attrs [:name :email])))]
-    (find created-user-id)))
+  (sql/insert entities/users (sql/values (select-keys user-attrs [:name :email]))))
 
 (defn rate [exercise user rating]
   (println "rating user" (:email user) " with rating : " rating "for exercise" (:name exercise)))
@@ -28,7 +21,7 @@
     (create-user user-attrs)))
 
 (defn completed [exercise]
-  (sql/select users
-              (sql/with regarde.models.rating-set/rating-sets)
-              (sql/join regarde.models.rating-set/rating-sets (= :rating_sets.users_id :id))
+  (sql/select entities/users
+              (sql/with entities/rating-sets)
+              (sql/join entities/rating-sets (= :rating_sets.users_id :id))
               (sql/where {:rating_sets.exercise_id (:id exercise)})))
