@@ -16,6 +16,7 @@
             [environ.core :refer [env]]
             [clojure.pprint :as pp]
             [regarde.models.user :as user]
+            [regarde.models.rating :as rating]
             [regarde.db]
             [regarde.models.exercise :as exercise]
             [regarde.templates :as templates]
@@ -45,6 +46,12 @@
   (exercise/create-exercise (:params request))
   (resp/redirect "/exercises"))
 
+(defn create-ratings [request]
+  (let [[exercise ratings] [(exercise/find (:id (:params request))) (:rating (:params request))]]
+    (doseq [r ratings]
+      (rating/update-or-create exercise (first r) (second r))))
+  (resp/redirect "/"))
+
 (defn list-users [request]
   (templates/users (user/all) (current-user request)))
 
@@ -68,8 +75,9 @@
        list-exercises)
   (GET "/exercises/:id/ratings/new" [id]
        (let [ex (exercise/find id)]
-         (println ex)
          (new-exercise-ratings ex)))
+  (POST "/exercises/:id/ratings" [id]
+        create-ratings)
   (GET "/sign-in" []
        (resp/redirect (:uri authentication/auth-req)))
   (ANY "*" []
@@ -103,5 +111,5 @@
                      {:port port :join? false})))
 
 ;; For interactive development:
-(.stop server)
+;; (.stop server)
 (def server (-main 3000))

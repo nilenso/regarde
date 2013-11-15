@@ -6,8 +6,13 @@
     <body>
         <p>Nilenso Exercises : </p>
         <div>Name of Exercise</div>
-        <ul>
-            <li>A user</li>
-        </ul>
+        <form action="/exercises/1/ratings" method="post">
+            <ul>
+                <li><span>A user</span>
+                    <input type="text" name="rating[]"></input>
+                </li>
+            </ul>
+            <input type="submit" value="rate"/>
+        </form>
     </body>
 </html>
