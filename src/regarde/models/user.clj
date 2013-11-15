@@ -11,6 +11,9 @@
 (defn all []
   (sql/select users))
 
+(defn find-user [user-attrs]
+  (when-let [user (first (-> (sql/select* users) (sql/where {:email (:email user-attrs)}) (sql/exec)))] user))
+
 (defn find [id]
   (first (sql/select users
                      (sql/where {:id (Integer. id)}))))
@@ -19,7 +22,7 @@
   (println "rating user" (:email user) " with rating : " rating "for exercise" (:name exercise)))
 
 (defn find-or-create-user [user-attrs]
-  (if-let [user (first (-> (sql/select* users) (sql/where {:email (:email user-attrs)}) (sql/exec)))]
+  (if-let [user (find-user user-attrs)]
     user
     (create-user user-attrs)))
 

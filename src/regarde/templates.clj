@@ -16,8 +16,9 @@
   [:li :input] (html/set-attr :name "rating[]" :name (str "rating[" (:id user) "]")))
 
 (html/deftemplate users "regarde/templates/users.html"
-  [users]
+  [users current-user]
   [:head :title] (html/content  "Nilenso | List Of Users")
+  [:h1] (html/content  (str "Hi " (:name current-user)))
   [:ul] (html/content (map #(user-snippet %) users)))
 
 (html/deftemplate new-exercise "regarde/templates/new-exercise.html" [])
