@@ -2,7 +2,7 @@
   (:require [korma.core :as sql]))
 
 (sql/defentity users
-  (has-may regarde.models.rating-sets))
+  (sql/has-many regarde.models.rating-set/rating-sets))
 
 (defn create-user [user-attrs]
   (let [created-user-id (sql/insert users (sql/values (select-keys user-attrs [:name :email])))]
@@ -28,5 +28,6 @@
 
 (defn completed [exercise]
   (sql/select users
+              (sql/with regarde.models.rating-set/rating-sets)
               (sql/join regarde.models.rating-set/rating-sets (= :rating-sets.user_id :id))
               (sql/where {:rating-sets.exercise_id (:id exercise)})))

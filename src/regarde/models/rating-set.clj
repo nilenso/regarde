@@ -3,7 +3,8 @@
               [korma.core :as sql]))
 
 (sql/defentity rating-sets
-  (sql/table :rating_sets))
+  (sql/table :rating_sets)
+  (sql/belongs-to regarde.models.user/users))
 
 (defn find [user-id exercise-id]
   (first (sql/select rating-sets
