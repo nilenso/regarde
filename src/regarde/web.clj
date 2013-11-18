@@ -72,7 +72,8 @@
   (let [users (user/all)]
     (if (exercise/complete? (exercise/users-done exercise) users)
       (templates/complete-exercise exercise users)
-      (templates/incomplete-exercise exercise (exercise/users-done exercise) (exercise/users-not-done exercise)))))
+      (templates/incomplete-exercise exercise (exercise/users-done exercise)
+                                     (exercise/users-not-done exercise)))))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -125,4 +126,4 @@
 
 ;; For interactive development:
 ;; (.stop server)
-(def server (-main 3000))
+;; (def server (-main 3000))
