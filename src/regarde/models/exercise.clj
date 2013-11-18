@@ -1,14 +1,13 @@
 (ns regarde.models.exercise
   (:require [korma.core :as sql]
-            [regarde.models.rating]))
-
-(sql/defentity exercises)
+            [regarde.models.rating]
+            [regarde.models.entities :as entities]))
 
 (defn create-exercise [exercise-attrs]
-  (sql/insert exercises (sql/values (select-keys exercise-attrs [:name]))))
+  (sql/insert entities/exercises (sql/values (select-keys exercise-attrs [:name]))))
 
 (defn all []
-  (sql/select exercises))
+  (sql/select entities/exercises))
 
 (defn users-done [exercise]
   (regarde.models.rating/users-done exercise))
@@ -23,5 +22,5 @@
     (== 0 (compare all-users completed-users))))
 
 (defn find [exercise-id]
-  (first (sql/select exercises
+  (first (sql/select entities/exercises
                      (sql/where {:id (Integer. exercise-id)}))))

@@ -1,11 +1,21 @@
 (ns regarde.models.entities
-  (:require [korma.core :as sql]))
+  (:require [korma.core :refer [defentity has-many belongs-to table select with]]))
 
-(declare rating-sets)
+(declare rating-sets ratings exercises)
 
-(sql/defentity users
-  (sql/has-many rating-sets))
+(defentity users
+  (has-many rating-sets)
+  (has-many ratings))
 
-(sql/defentity rating-sets
-  (sql/table :rating_sets)
-  (sql/belongs-to users))
+(defentity rating-sets
+  (table :rating_sets)
+  (belongs-to users)
+  (has-many ratings)
+  (belongs-to exercises))
+
+(defentity ratings
+  (belongs-to users)
+  (belongs-to rating-sets))
+
+(defentity exercises
+  (has-many rating-sets))

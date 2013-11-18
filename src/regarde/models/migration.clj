@@ -25,7 +25,7 @@
 (defn create-rating-set [db]
   (j/db-do-commands db (ddl/create-table :rating_sets
                                          [:id :serial "PRIMARY KEY"]
-                                         [:exercise_id :integer "NOT NULL"]
+                                         [:exercises_id :integer "NOT NULL"]
                                          [:users_id :integer "NOT NULL"]
                                          [:completed :boolean "DEFAULT false"]))) ;; current user
 

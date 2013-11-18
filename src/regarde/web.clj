@@ -70,7 +70,7 @@
 
 (defn show-exercise [exercise]
   (let [users (user/all)]
-    (if (exercise/complete? (exercise/users-completed exercise) users)
+    (if (exercise/complete? (exercise/users-done exercise) users)
       (templates/complete-exercise exercise users)
       (templates/incomplete-exercise exercise (exercise/users-done exercise) (exercise/users-not-done exercise)))))
 
@@ -88,7 +88,7 @@
   (GET "/exercises/:id" [id]
        (let [ex (exercise/find id)]
          (show-exercise ex)))
-  (GET "/exercises/:id/ratings/new" [id]
+  (GET "/exercises/:id/rating_sets/new" [id]
        (let [ex (exercise/find id)]
          (new-exercise-ratings ex)))
   (POST "/exercises/:id/ratings" [id]

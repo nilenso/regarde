@@ -55,4 +55,5 @@
   [:p :span] (html/content (:name exercise))
   [:p.status] (html/content (str "This exercise is still in progress: "))
   [:ul.not-done] (html/content (map #(rating-user-snippet %) users-not-done))
-  [:ul.done] (html/content (map #(rating-user-snippet %) users-done)))
+  [:ul.done] (html/content (map #(rating-user-snippet %) users-done))
+  [:p.new-rating-set :a] (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/new")))
