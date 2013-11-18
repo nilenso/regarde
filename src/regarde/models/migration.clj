@@ -19,7 +19,7 @@
   (j/db-do-commands db (ddl/create-table :ratings
                                          [:id :serial "PRIMARY KEY"]
                                          [:users_id :integer "NOT NULL"];; rated user
-                                         [:rating_set_id :integer "NOT NULL"]
+                                         [:rating_sets_id :integer "NOT NULL"]
                                          [:rating :integer "NOT NULL"])))
 
 (defn create-rating-set [db]

@@ -13,12 +13,12 @@
     (clojure.set/difference (set all) (set done))))
 
 (defn find [set-id user-id]
-  (first (sql/select entities/ratings (sql/where {:rating_set_id (Integer. set-id)
+  (first (sql/select entities/ratings (sql/where {:rating_sets_id (Integer. set-id)
                                          :users_id (Integer. user-id)}))))
 
 (defn create [set rating-user-id rating]
   (sql/insert entities/ratings (sql/values [{:rating (Integer.  rating)
-                                    :rating_set_id (Integer. (:id set))
+                                    :rating_sets_id (Integer. (:id set))
                                     :users_id (Integer.  rating-user-id) }])))
 
 (defn update [rating new-rating-value]
@@ -32,5 +32,6 @@
 (defn all [] ;; duplication ;; How do I dry this up across models?
   (sql/select entities/ratings))
 
-(defn summary [exercise]
-  )
+(defn normalize [ratings]
+  (let [total (reduce + (map #(:rating %) ratings))]
+    (map #(merge % {:rating (format "%.2f" (* 100 (float (/ (:rating %) total))))}) ratings)))
