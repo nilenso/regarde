@@ -15,8 +15,10 @@
                  [org.clojure/java.jdbc "0.3.0-beta1"]
                  [korma "0.3.0-RC6"]
                  [org.postgresql/postgresql "9.3-1100-jdbc4"]
-                 [nilenso/clj-oauth2 "0.3.3-SNAPSHOT"]]
+                 [nilenso/clj-oauth2 "0.3.3-SNAPSHOT"]
+                 [expectations "1.4.52"]]
   :min-lein-version "2.0.0"
-  :plugins [[environ/environ.lein "0.2.1"]]
+  :plugins [[environ/environ.lein "0.2.1"]
+            [lein-expectations "0.0.7"]]
   :hooks [environ.leiningen.hooks]
   :profiles {:production {:env {:production true}}})

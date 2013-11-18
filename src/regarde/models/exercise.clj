@@ -10,13 +10,14 @@
 (defn all []
   (sql/select exercises))
 
-(defn complete? [exercise users]
+(defn users-completed [exercise]
+  (regarde.models.rating/users-completed exercise))
+
+(defn complete? [users-completed users]
   (let [[all-users completed-users]
-        [
-         (into [] (map #(:id %) users))
-         (into [] (map #(:id %) (regarde.models.rating/users-completed exercise)))
-         ]]
-    (if (== 0 (compare all-users completed-users)) true false)))
+        [(into [] (map #(:id %) users))
+         (into [] (map #(:id %) users-completed))]]
+    (== 0 (compare all-users completed-users))))
 
 (defn find [exercise-id]
   (first (sql/select exercises

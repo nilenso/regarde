@@ -19,7 +19,7 @@
   (j/db-do-commands db (ddl/create-table :ratings
                                          [:id :serial "PRIMARY KEY"]
                                          [:users_id :integer "NOT NULL"];; rated user
-                                         [:set_id :integer "NOT NULL"]
+                                         [:rating_set_id :integer "NOT NULL"]
                                          [:rating :integer "NOT NULL"])))
 
 (defn create-rating-set [db]
@@ -31,7 +31,7 @@
 (defn drop-tables [db]
   (j/db-do-commands db "DROP TABLE IF EXISTS users, ratings, rating_sets, exercises"))
 
-(defn -main [] 
+(defn -main []
   (let [db-spec (System/getenv "REGARDE_DATABASE_URL")
         db {:connection (j/get-connection db-spec)}]
     (println "Deleting tables...")
