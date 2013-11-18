@@ -34,4 +34,4 @@
 
 (defn normalize [ratings]
   (let [total (reduce + (map #(:rating %) ratings))]
-    (map #(merge % {:rating (format "%.2f" (* 100 (float (/ (:rating %) total))))}) ratings)))
+    (map #(merge % {:rating (* 100 (float (/ (:rating %) total)))}) ratings)))
