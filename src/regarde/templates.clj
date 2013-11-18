@@ -32,16 +32,27 @@
 (html/deftemplate exercises "regarde/templates/exercises.html"
   [exercises]
   [:head :title] (html/content "Nilenso | List of Exercises")
-  [:ul](html/content (map #(exercise-snippet %) exercises)))
+  [:ul] (html/content (map #(exercise-snippet %) exercises))
+  [:p :a] (html/set-attr :href "/exercises/new"))
 
 (html/deftemplate new-ratings "regarde/templates/new-ratings.html"
   [exercise users]
   [:div] (html/content (:name exercise))
   [:ul] (html/content (map #(rating-snippet % exercise) users)))
 
-(html/deftemplate exercise "regarde/templates/exercise.html"
+(html/deftemplate complete-exercise "regarde/templates/complete-exercise.html"
   [exercise users]
   [:p :span] (html/content (:name exercise))
-  [:p :b] (html/content (if (exercise/complete? exercise users)
-                          "Average Ratings are being calculated"
-                          "This exercise is still in progress")))
+  [:p :b] (html/content "Average Ratings are being calculated"))
+
+(html/defsnippet rating-user-snippet "regarde/templates/incomplete-exercise.html"
+  [:li.snippet]
+  [user]
+  [:li] (html/content (str (:name user) " / " (:email user))))
+
+(html/deftemplate incomplete-exercise "regarde/templates/incomplete-exercise.html"
+  [exercise users-done users-not-done]
+  [:p :span] (html/content (:name exercise))
+  [:p.status] (html/content (str "This exercise is still in progress: "))
+  [:ul.not-done] (html/content (map #(rating-user-snippet %) users-not-done))
+  [:ul.done] (html/content (map #(rating-user-snippet %) users-done)))

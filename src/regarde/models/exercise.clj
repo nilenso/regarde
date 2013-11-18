@@ -10,8 +10,11 @@
 (defn all []
   (sql/select exercises))
 
-(defn users-completed [exercise]
-  (regarde.models.rating/users-completed exercise))
+(defn users-done [exercise]
+  (regarde.models.rating/users-done exercise))
+
+(defn users-not-done [exercise]
+  (regarde.models.rating/users-not-done exercise))
 
 (defn complete? [users-completed users]
   (let [[all-users completed-users]

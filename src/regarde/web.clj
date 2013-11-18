@@ -70,14 +70,15 @@
 
 (defn show-exercise [exercise]
   (let [users (user/all)]
-    (templates/exercise exercise users)))
-
+    (if (exercise/complete? (exercise/users-completed exercise) users)
+      (templates/complete-exercise exercise users)
+      (templates/incomplete-exercise exercise (exercise/users-done exercise) (exercise/users-not-done exercise)))))
 
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
   (GET "/" []
-       list-users)
+       list-exercises)
   (GET "/exercises/new" []
        new-exercise)
   (POST "/exercises" []
@@ -124,4 +125,4 @@
 
 ;; For interactive development:
 ;; (.stop server)
-;; (def server (-main 3000))
+(def server (-main 3000))

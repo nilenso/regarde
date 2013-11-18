@@ -26,7 +26,8 @@
   (j/db-do-commands db (ddl/create-table :rating_sets
                                          [:id :serial "PRIMARY KEY"]
                                          [:exercise_id :integer "NOT NULL"]
-                                         [:users_id :integer "NOT NULL"]))) ;; current user
+                                         [:users_id :integer "NOT NULL"]
+                                         [:completed :boolean "DEFAULT false"]))) ;; current user
 
 (defn drop-tables [db]
   (j/db-do-commands db "DROP TABLE IF EXISTS users, ratings, rating_sets, exercises"))
