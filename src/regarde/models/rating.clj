@@ -32,6 +32,11 @@
 (defn all [] ;; duplication ;; How do I dry this up across models?
   (sql/select entities/ratings))
 
+(defn to-relative [n total]
+  (/ (:rating n) total))
+
 (defn normalize [ratings]
   (let [total (reduce + (map #(:rating %) ratings))]
-    (map #(merge % {:rating (* 100 (float (/ (:rating %) total)))}) ratings)))
+    (map #(merge % {:rating (to-relative % total)}) ratings)
+    ;; (map #(assoc-in % [:rating] (to-percent % total)))
+    ))

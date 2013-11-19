@@ -18,26 +18,24 @@
     set
     (create user-id exercise-id)))
 
-(defn rating-sets [exercise]
-  (sql/select entities/rating-sets
-              (sql/where {:exercises_id (:id exercise)})
-              (sql/with entities/ratings (sql/with entities/users))))
+(defn normalized-rating-sets [rating-sets]
+  (let [sets-of-ratings (map #(:ratings %) rating-sets)]
+    ;; TODO: this flatten is cheap. it probably belongs in summarize-rating-sets.
+    (flatten (map ratings/normalize sets-of-ratings))))
 
-(defn normalized-rating-sets [exercise]
-  (let [sets-of-ratings (into [] (map #(:ratings %) (into [] (rating-sets {:id 1}))))]
-    (into [] (map #(ratings/normalize %) sets-of-ratings))))
-
-(defn reduce-user-ratings [ratings]
+(defn aggregate-ratings [ratings]
   (let [name (last (set (map #(:name %) ratings)))
         email (last (set (map #(:email %) ratings)))
         rating (/ (reduce + (map #(:rating %) ratings)) (count ratings))]
     {:name name :email email :rating rating}))
 
-(defn reduce-ratings [ratings]
-  (map #(reduce-user-ratings %) ratings))
+(defn summarize-rating-sets [ratings]
+  (let [ratings-for-user (vals (group-by :users_id ratings))]
+    (map aggregate-ratings ratings-for-user)))
 
-(defn summarize-rating-sets [normalized-sets-of-rating]
-  (reduce-ratings (vals (group-by :users_id normalized-sets-of-rating))))
+(defn rating-sets [exercise]
+  (sql/select entities/rating-sets
+              (sql/where {:exercises_id (:id exercise)})
+              (sql/with entities/ratings (sql/with entities/users))))
 
-(defn summarize [exercise]
-  (summarize-rating-sets (flatten (normalized-rating-sets exercise))))
+(def summarize (comp summarize-rating-sets normalized-rating-sets rating-sets))
