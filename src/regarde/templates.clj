@@ -1,6 +1,7 @@
 (ns regarde.templates
   (:require [net.cgrand.enlive-html :as html]
-            [regarde.models.exercise :as exercise]))
+            [regarde.models.exercise :as exercise]
+            [clojure.math.numeric-tower :as math]))
 
 (html/deftemplate new-user "regarde/templates/new-user.html" [])
 
@@ -40,10 +41,17 @@
   [:div] (html/content (:name exercise))
   [:ul] (html/content (map #(rating-snippet % exercise) users)))
 
+(html/defsnippet summary-user-snippet "regarde/templates/complete-exercise.html"
+  [:li.snippet]
+  [rating]
+  [:li] (html/content (str (:name rating)
+                           " - "
+                           (math/round (* 100 (:rating rating))))))
+
 (html/deftemplate complete-exercise "regarde/templates/complete-exercise.html"
-  [exercise users]
+  [exercise ratings]
   [:p :span] (html/content (:name exercise))
-  [:p :b] (html/content "Average Ratings are being calculated"))
+  [:ul.done] (html/content (map #(summary-user-snippet %) ratings)))
 
 (html/defsnippet rating-user-snippet "regarde/templates/incomplete-exercise.html"
   [:li.snippet]

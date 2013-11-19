@@ -23,11 +23,11 @@
     ;; TODO: this flatten is cheap. it probably belongs in summarize-rating-sets.
     (flatten (map ratings/normalize sets-of-ratings))))
 
+(defn fold-sum [left-rating right-rating]
+  (assoc left-rating :rating (+ (:rating left-rating) (:rating right-rating))))
+
 (defn aggregate-ratings [ratings]
-  (let [name (last (set (map #(:name %) ratings)))
-        email (last (set (map #(:email %) ratings)))
-        rating (/ (reduce + (map #(:rating %) ratings)) (count ratings))]
-    {:name name :email email :rating rating}))
+  (update-in (reduce fold-sum ratings) [:rating] #(/ % (count ratings))))
 
 (defn summarize-rating-sets [ratings]
   (let [ratings-for-user (vals (group-by :users_id ratings))]

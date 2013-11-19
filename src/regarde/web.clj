@@ -71,7 +71,8 @@
 (defn show-exercise [exercise]
   (let [users (user/all)]
     (if (exercise/complete? (exercise/users-done exercise) users)
-      (templates/complete-exercise exercise users)
+      (templates/complete-exercise exercise
+                                   (rating-set/summarize exercise))
       (templates/incomplete-exercise exercise (exercise/users-done exercise)
                                      (exercise/users-not-done exercise)))))
 
@@ -126,4 +127,4 @@
 
 ;; For interactive development:
 ;; (.stop server)
-;; (def server (-main 3000))
+(def server (-main 3000))

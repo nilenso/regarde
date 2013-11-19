@@ -35,8 +35,12 @@
 (defn to-relative [n total]
   (/ (:rating n) total))
 
+(defn normalize-rating [rating total]
+  (select-keys (merge rating {:rating (to-relative rating total)})
+               [:users_id :email :name :rating]))
+
 (defn normalize [ratings]
   (let [total (reduce + (map #(:rating %) ratings))]
-    (map #(merge % {:rating (to-relative % total)}) ratings)
+    (map #(normalize-rating % total) ratings)
     ;; (map #(assoc-in % [:rating] (to-percent % total)))
     ))

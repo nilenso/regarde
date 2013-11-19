@@ -16,7 +16,8 @@
                  [korma "0.3.0-RC6"]
                  [org.postgresql/postgresql "9.3-1100-jdbc4"]
                  [nilenso/clj-oauth2 "0.3.3-SNAPSHOT"]
-                 [expectations "1.4.52"]]
+                 [expectations "1.4.52"]
+                 [org.clojure/math.numeric-tower "0.0.2"]]
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]
             [lein-expectations "0.0.7"]]
