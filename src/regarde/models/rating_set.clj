@@ -37,9 +37,7 @@
   (map #(reduce-user-ratings %) ratings))
 
 (defn summarize-rating-sets [normalized-sets-of-rating]
-  (let [ user-grouped-ratings (group-by :users_id normalized-sets-of-rating)]
-         (let [user-ids (keys user-grouped-ratings) ratings (vals user-grouped-ratings)]
-           (into [] (zipmap user-ids (reduce-ratings ratings))))))
+  (reduce-ratings (vals (group-by :users_id normalized-sets-of-rating))))
 
 (defn summarize [exercise]
   (summarize-rating-sets (flatten (normalized-rating-sets exercise))))

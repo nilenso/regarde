@@ -27,7 +27,5 @@
                                 :users_id 2,
                                 :id 2})]
 
-  (expect 50.0 (get-in (rating-set/summarize-rating-sets normalized-rating-sets)
-                       [0 1 :rating]))
-  (expect 50.0 (get-in (rating-set/summarize-rating-sets normalized-rating-sets)
-                       [1 1 :rating])))
+  (expect 50.0 (:rating (first (rating-set/summarize-rating-sets normalized-rating-sets))))
+  (expect 50.0 (:rating (second (rating-set/summarize-rating-sets normalized-rating-sets)))))
