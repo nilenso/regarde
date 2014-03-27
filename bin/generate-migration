@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]
+then
+    echo "You need to specify a migration name."
+fi
+
+TIME=$(date +%s)
+NAME=$1
+
+touch `pwd`/migrations/$TIME-$NAME.up.sql
+touch `pwd`/migrations/$TIME-$NAME.down.sql
+
+echo "Migration files generated."
+
