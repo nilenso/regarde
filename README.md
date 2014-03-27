@@ -74,6 +74,16 @@ Then you can launch the REPL:
 Everything you enter will be evaluated remotely in the running dyno,
 which can be very useful for debugging or inspecting live data.
 
+## Local Setup
+
+- Make sure your `~/.lein/profiles.clj` file contains the following keys:
+
+```clojure
+{:user {:env {:session-secret "random-string"
+              :google-client-id "client-id"
+              :google-client-secret "client-secret"}}}
+```
+
 ## License
 
 Copyright © 2013 FIXME
