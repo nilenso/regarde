@@ -35,10 +35,13 @@
 (defn to-relative [n total]
   (/ (:rating n) total))
 
-(defn normalize-rating [rating total]
+(defn normalize-rating 
   "Normalize a rating against a given total."
+  [rating total]
   (assoc rating :rating (to-relative rating total)))
 
-(defn normalize [ratings]
+(defn normalize 
+  "Normalize a set of ratings."
+  [ratings]
   (let [total (reduce + (map :rating ratings))]
     (map #(normalize-rating % total) ratings)))
