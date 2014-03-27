@@ -19,21 +19,29 @@
     (create user-id exercise-id)))
 
 (defn normalized-rating-sets [rating-sets]
-  (let [sets-of-ratings (map #(:ratings %) rating-sets)]
-    ;; TODO: this flatten is cheap. it probably belongs in summarize-rating-sets.
-    (flatten (map ratings/normalize sets-of-ratings))))
+  "Take a collection of rating sets, normalize the ratings of each set,
+   and return a single collection comprising all the normalized ratings."
+  ;; TODO: this flatten is cheap. it probably belongs in summarize-rating-sets.
+  (flatten (map
+            (fn [rating-set]
+              (ratings/normalize (:ratings rating-set)))
+            rating-sets)))
 
 (defn fold-sum [left-rating right-rating]
   (assoc left-rating :rating (+ (:rating left-rating) (:rating right-rating))))
 
 (defn aggregate-ratings [ratings]
+  "Given collection of ratings, take their average."
   (update-in (reduce fold-sum ratings) [:rating] #(/ % (count ratings))))
 
 (defn summarize-rating-sets [ratings]
+  "Take a collection of ratings, group them by user,
+   and average all the ratings for each user."
   (let [ratings-for-user (vals (group-by :users_id ratings))]
     (map aggregate-ratings ratings-for-user)))
 
 (defn rating-sets [exercise]
+  "All rating sets (with their nested ratings) belonging to exercise."
   (sql/select entities/rating-sets
               (sql/where {:exercises_id (:id exercise)})
               (sql/with entities/ratings (sql/with entities/users))))
