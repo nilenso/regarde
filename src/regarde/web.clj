@@ -114,7 +114,7 @@
     (handler request)))
 
 (defn -main [& [port]]
-  (let [port (Integer. (or port (env :port) 5000))
+  (let [port (Integer. (or port (env :port) 3000))
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
     (jetty/run-jetty (-> #'app
@@ -125,7 +125,3 @@
                          ((if (env :development) wrap-reload identity))
                          (site {:session {:store store}}))
                      {:port port :join? false})))
-
-;; For interactive development:
-;; (.stop server)
-(def server (-main 3000))
