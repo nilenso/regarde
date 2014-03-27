@@ -84,6 +84,8 @@ which can be very useful for debugging or inspecting live data.
               :google-client-secret "client-secret"}}}
 ```
 
+- Check the database configuration in `src/regarde/db.clj`
+
 ## License
 
 Copyright © 2013 FIXME
