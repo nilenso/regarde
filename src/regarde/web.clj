@@ -23,7 +23,8 @@
             [regarde.templates :as templates]
             [clj-oauth2.client :as oauth2]
             [clj-oauth2.ring :as oauth2-ring]
-            [regarde.authentication :as authentication]))
+            [regarde.authentication :as authentication]
+            [ring.middleware.reload :refer [wrap-reload]]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -119,9 +120,9 @@
     (jetty/run-jetty (-> #'app
                          (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
                          (wrap-find-or-create-user)
-                         ((if (env :production)
-                            wrap-error-page
-                            trace/wrap-stacktrace))
+                         ((if (env :production)  wrap-error-page identity))
+                         ((if (env :development) trace/wrap-stacktrace identity))
+                         ((if (env :development) wrap-reload identity))
                          (site {:session {:store store}}))
                      {:port port :join? false})))
 
