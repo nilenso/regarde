@@ -36,11 +36,9 @@
   (/ (:rating n) total))
 
 (defn normalize-rating [rating total]
-  (select-keys (merge rating {:rating (to-relative rating total)})
-               [:users_id :email :name :rating]))
+  "Normalize a rating against a given total."
+  (assoc rating :rating (to-relative rating total)))
 
 (defn normalize [ratings]
-  (let [total (reduce + (map #(:rating %) ratings))]
-    (map #(normalize-rating % total) ratings)
-    ;; (map #(assoc-in % [:rating] (to-percent % total)))
-    ))
+  (let [total (reduce + (map :rating ratings))]
+    (map #(normalize-rating % total) ratings)))
