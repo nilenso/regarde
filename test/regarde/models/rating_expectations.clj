@@ -1,4 +1,4 @@
-(ns regarde.models.rating-test
+(ns regarde.models.rating-expectations
   [:use expectations]
   (:require [regarde.models.rating :as ratings]))
 

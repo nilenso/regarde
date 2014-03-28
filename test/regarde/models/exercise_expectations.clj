@@ -1,4 +1,4 @@
-(ns regarde.models.exercise-test
+(ns regarde.models.exercise-expectations
   (:use expectations)
   (:require [regarde.models.exercise :as exercise]))
 
