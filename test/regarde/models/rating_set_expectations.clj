@@ -45,7 +45,7 @@
   (expect {:rating 345/1579} (in (nth normalized 1)))
   (expect {:rating 123/176} (in (nth normalized 2)))
   (expect {:rating 53/176} (in (nth normalized 3)))
-  (expect {:users_id 1 :name "Steven Deobald" :email "deobald@gmail.com" :rating 1234/1579} (first normalized)))
+  (expect {:users_id 1 :name "Steven Deobald" :email "deobald@gmail.com" :rating 1234/1579} (in (first normalized))))
 
 (let [ratings [{:name "Steven" :email "steven@nilenso.com" :rating 3/10}
                {:name "Steven" :email "steven@nilenso.com" :rating 15/20}
