@@ -45,37 +45,37 @@
   (expect {:rating 345/1579} (in (nth normalized 1)))
   (expect {:rating 123/176} (in (nth normalized 2)))
   (expect {:rating 53/176} (in (nth normalized 3)))
-  (expect {:users_id 1 :name "Steven Deobald" :email "deobald@gmail.com" :rating 1234/1579} (in (first normalized))))
+  (expect {:users_id 1 :name "Steven Deobald" :email "deobald@gmail.com"} (in (first normalized))))
 
-(let [ratings [{:name "Steven" :email "steven@nilenso.com" :rating 3/10}
-               {:name "Steven" :email "steven@nilenso.com" :rating 15/20}
-               {:name "Steven" :email "steven@nilenso.com" :rating 6/40}]]
-  (expect {:name "Steven" :email "steven@nilenso.com" :rating 16/40} (rating-set/aggregate-ratings ratings)))
+(let [ratings [{:name "Steven" :email "steven@nilenso.com" :rating 20}
+               {:name "Steven" :email "steven@nilenso.com" :rating 10}
+               {:name "Steven" :email "steven@nilenso.com" :rating 30}]]
+  (expect {:name "Steven" :email "steven@nilenso.com" :rating 20} (rating-set/aggregate-ratings ratings)))
 
-(let [normalize-rating-sets '({:email "aninda@nilenso.com",
-                                :name "Aninda Kundu",
-                                :rating 3/10,
-                                :rating_sets_id 1,
-                                :users_id 1,
-                                :id 1}
-                               {:email "aninda.kundu@gmail.com",
-                                :name "Aninda Kundu",
-                                :rating 7/10,
-                                :rating_sets_id 1,
-                                :users_id 2,
-                                :id 4}
-                               {:email "aninda@nilenso.com",
-                                :name "Aninda Kundu",
-                                :rating 7/10,
-                                :rating_sets_id 2,
-                                :users_id 1,
-                                :id 3}
-                               {:email "aninda.kundu@gmail.com",
-                                :name "Aninda Kundu",
-                                :rating 3/10,
-                                :rating_sets_id 2,
-                                :users_id 2,
-                                :id 2})]
-
-  (expect 1/2 (:rating (first (rating-set/summarize-rating-sets normalize-rating-sets))))
-  (expect 1/2 (:rating (second (rating-set/summarize-rating-sets normalize-rating-sets)))))
+(let [ratings-for-asif [{:email "asif@nilenso.com",
+                         :name "Asif",
+                         :rating 3/10,
+                         :rating_sets_id 1,
+                         :users_id 1,
+                         :id 1}
+                        {:email "asif@nilenso.com",
+                         :name "Asif",
+                         :rating 1/10,
+                         :rating_sets_id 2,
+                         :users_id 1,
+                         :id 3}]
+      ratings-for-aninda [{:email "aninda.kundu@gmail.com",
+                           :name "Aninda Kundu",
+                           :rating 7/10,
+                           :rating_sets_id 1,
+                           :users_id 2,
+                           :id 4}
+                          {:email "aninda.kundu@gmail.com",
+                           :name "Aninda Kundu",
+                           :rating 9/10,
+                           :rating_sets_id 2,
+                           :users_id 2,
+                           :id 2}]
+      normalized-ratings (concat ratings-for-asif ratings-for-aninda)]
+  (expect 2/10 (:rating (first (rating-set/summarize-rating-sets normalized-ratings))))
+  (expect 8/10 (:rating (second (rating-set/summarize-rating-sets normalized-ratings)))))
