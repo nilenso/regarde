@@ -17,9 +17,14 @@
                  [org.postgresql/postgresql "9.3-1100-jdbc4"]
                  [nilenso/clj-oauth2 "0.3.3-SNAPSHOT"]
                  [expectations "1.4.52"]
-                 [org.clojure/math.numeric-tower "0.0.2"]]
+                 [org.clojure/math.numeric-tower "0.0.2"]
+                 [ragtime "0.3.6"]]
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]
-            [lein-expectations "0.0.7"]]
+            [lein-expectations "0.0.7"]
+            [ragtime/ragtime.lein "0.3.6"]]
   :hooks [environ.leiningen.hooks]
-  :profiles {:production {:env {:production true}}})
+  :profiles {:production {:env {:production true}}
+             :dev {:env {:development true}}}
+  :ragtime {:migrations ragtime.sql.files/migrations
+            :database "jdbc:postgresql://localhost:5432/regarde_dev"})

@@ -23,7 +23,8 @@
             [regarde.templates :as templates]
             [clj-oauth2.client :as oauth2]
             [clj-oauth2.ring :as oauth2-ring]
-            [regarde.authentication :as authentication]))
+            [regarde.authentication :as authentication]
+            [ring.middleware.reload :refer [wrap-reload]]))
 
 (defn- authenticated? [user pass]
   ;; TODO: heroku config:add REPL_USER=[...] REPL_PASSWORD=[...]
@@ -113,18 +114,14 @@
     (handler request)))
 
 (defn -main [& [port]]
-  (let [port (Integer. (or port (env :port) 5000))
+  (let [port (Integer. (or port (env :port) 3000))
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
     (jetty/run-jetty (-> #'app
                          (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
                          (wrap-find-or-create-user)
-                         ((if (env :production)
-                            wrap-error-page
-                            trace/wrap-stacktrace))
+                         ((if (env :production)  wrap-error-page identity))
+                         ((if (env :development) trace/wrap-stacktrace identity))
+                         ((if (env :development) wrap-reload identity))
                          (site {:session {:store store}}))
                      {:port port :join? false})))
-
-;; For interactive development:
-;; (.stop server)
-(def server (-main 3000))

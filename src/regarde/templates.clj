@@ -39,6 +39,7 @@
 (html/deftemplate new-ratings "regarde/templates/new-ratings.html"
   [exercise users]
   [:div] (html/content (:name exercise))
+  [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/ratings"))
   [:ul] (html/content (map #(rating-snippet % exercise) users)))
 
 (html/defsnippet summary-user-snippet "regarde/templates/complete-exercise.html"
