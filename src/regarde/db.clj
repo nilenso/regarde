@@ -1,7 +1,7 @@
 (ns regarde.db
   (:require [korma.db :as sql]
-            [ragtime.core :refer [connection migrate-all rollback]]
-            [ragtime.sql.files :refer [migrations]]))
+            [ragtime.core :refer [connection migrate-all applied-migrations]]
+            [ragtime.sql.files]))
 
 (defn db-name [env]
   (cond
@@ -10,19 +10,21 @@
    (= env :production) "regarde_prod"))
 
 (defn setup [env]
-  (let [db-name (db-name env)]
+  (let [name (db-name env)]
     (sql/defdb database
-      (sql/postgres {:db db-name
+      (sql/postgres {:db name
                      :user "postgres"
                      :password ""}))))
 
 (defn perform-migration [env]
   (let [connection (connection (str "jdbc:postgresql://localhost:5432/" (db-name env)))
-        migrations (migrations)]
+        migrations (ragtime.sql.files/migrations)]
     (migrate-all connection migrations)))
 
 (defn teardown [env]
   (let [connection (connection (str "jdbc:postgresql://localhost:5432/" (db-name env)))
-        migrations (reverse (migrations))]
-    (doseq [migration migrations]
-      (rollback connection migration))))
+        applied-migrations (reverse (applied-migrations connection))
+        migrations (ragtime.sql.files/migrations)]
+    (when (> (count applied-migrations) 0)
+      (doseq [migration migrations]
+        (ragtime.core/rollback connection migration)))))
