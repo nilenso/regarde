@@ -61,8 +61,8 @@
 (defn list-exercises [request]
   (templates/exercises (exercise/all)))
 
-(defn new-exercise-ratings [exercise]
-  (let [users (user/all)]
+(defn new-exercise-ratings [exercise request]
+  (let [users (user/all-except (current-user request))]
     (templates/new-ratings exercise users)))
 
 (defn find-or-create-user [request]
@@ -91,9 +91,9 @@
   (GET "/exercises/:id" [id]
        (let [ex (exercise/find id)]
          (show-exercise ex)))
-  (GET "/exercises/:id/rating_sets/new" [id]
+  (GET "/exercises/:id/rating_sets/new" [id :as request]
        (let [ex (exercise/find id)]
-         (new-exercise-ratings ex)))
+         (new-exercise-ratings ex request)))
   (POST "/exercises/:id/ratings" [id]
         create-ratings)
   (ANY "*" []
