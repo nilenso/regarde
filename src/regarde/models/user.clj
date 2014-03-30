@@ -20,6 +20,10 @@
     user
     (create-user user-attrs)))
 
+(defn all-except [user]
+  (sql/select entities/users
+              (sql/where {:id [not= (:id user)]})))
+
 (defn completed [exercise]
   (sql/select entities/users
               (sql/with entities/rating-sets)

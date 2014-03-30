@@ -18,7 +18,7 @@
             [regarde.models.user :as user]
             [regarde.models.rating :as rating]
             [regarde.models.rating-set :as rating-set]
-            [regarde.db]
+            [regarde.db :as db]
             [regarde.models.exercise :as exercise]
             [regarde.templates :as templates]
             [clj-oauth2.client :as oauth2]
@@ -61,8 +61,8 @@
 (defn list-exercises [request]
   (templates/exercises (exercise/all)))
 
-(defn new-exercise-ratings [exercise]
-  (let [users (user/all)]
+(defn new-exercise-ratings [exercise request]
+  (let [users (user/all-except (current-user request))]
     (templates/new-ratings exercise users)))
 
 (defn find-or-create-user [request]
@@ -91,9 +91,9 @@
   (GET "/exercises/:id" [id]
        (let [ex (exercise/find id)]
          (show-exercise ex)))
-  (GET "/exercises/:id/rating_sets/new" [id]
+  (GET "/exercises/:id/rating_sets/new" [id :as request]
        (let [ex (exercise/find id)]
-         (new-exercise-ratings ex)))
+         (new-exercise-ratings ex request)))
   (POST "/exercises/:id/ratings" [id]
         create-ratings)
   (ANY "*" []
@@ -117,6 +117,9 @@
   (let [port (Integer. (or port (env :port) 3000))
         ;; TODO: heroku config:add SESSION_SECRET=$RANDOM_16_CHARS
         store (cookie/cookie-store {:key (env :session-secret)})]
+    (db/setup (if (env :production)
+                :production
+                :development))
     (jetty/run-jetty (-> #'app
                          (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
                          (wrap-find-or-create-user)

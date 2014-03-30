@@ -32,13 +32,10 @@
 (defn all [] ;; duplication ;; How do I dry this up across models?
   (sql/select entities/ratings))
 
-(defn to-relative [n total]
-  (/ (:rating n) total))
-
 (defn normalize-rating 
   "Normalize a rating against a given total."
   [rating total]
-  (assoc rating :rating (to-relative rating total)))
+  (assoc rating :rating (/ (:rating rating) total)))
 
 (defn normalize 
   "Normalize a set of ratings."

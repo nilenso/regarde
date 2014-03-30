@@ -1,0 +1,5 @@
+language: clojure
+lein: lein2
+before_script:
+  - psql -c 'create database regarde_test;' -U postgres
+script: lein2 expectations
