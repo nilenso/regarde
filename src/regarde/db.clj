@@ -4,25 +4,24 @@
             [ragtime.sql.files]))
 
 (defn db-name [env]
-  (cond
-   (= env :development) "regarde_dev"
-   (= env :test) "regarde_test"
-   (= env :production) "regarde_prod"))
+  (if-let [env-database (env :database-url)]
+    env-database
+    (str "jdbc:postgresql://localhost:5432/"
+         (cond
+          (= env :development) "regarde_dev"
+          (= env :test) "regarde_test"
+          (= env :production) "regarde_prod"))))
 
 (defn setup [env]
-  (let [name (db-name env)]
-    (sql/defdb database
-      (sql/postgres {:db name
-                     :user "postgres"
-                     :password ""}))))
+  (sql/defdb database (db-name env)))
 
 (defn perform-migration [env]
-  (let [connection (connection (str "jdbc:postgresql://localhost:5432/" (db-name env)))
+  (let [connection (connection (db-name env))
         migrations (ragtime.sql.files/migrations)]
     (migrate-all connection migrations)))
 
 (defn teardown [env]
-  (let [connection (connection (str "jdbc:postgresql://localhost:5432/" (db-name env)))
+  (let [connection (connection (db-name env))
         applied-migrations (reverse (applied-migrations connection))
         migrations (ragtime.sql.files/migrations)]
     (when (> (count applied-migrations) 0)
