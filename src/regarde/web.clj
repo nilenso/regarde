@@ -121,10 +121,10 @@
                 :production
                 :development))
     (jetty/run-jetty (-> #'app
+                         (trace/wrap-stacktrace)
                          (oauth2-ring/wrap-oauth2 authentication/google-com-oauth2)
                          (wrap-find-or-create-user)
                          ((if (env :production)  wrap-error-page identity))
-                         ((if (env :development) trace/wrap-stacktrace identity))
                          ((if (env :development) wrap-reload identity))
                          (site {:session {:store store}}))
                      {:port port :join? false})))
