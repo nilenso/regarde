@@ -5,7 +5,7 @@
             [environ.core]))
 
 (defn db-name [env]
-  (if-let [env-database (environ.core/env :database-url)]
+  (if-let [env-database (environ.core/env :regarde-database-url)]
     env-database
     (str "jdbc:postgresql://localhost:5432/"
          (cond
