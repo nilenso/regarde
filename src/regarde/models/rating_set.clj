@@ -2,7 +2,8 @@
   (:require [regarde.models.exercise :as exercise]
             [korma.core :as sql]
             [regarde.models.entities :as entities]
-            [regarde.models.rating :as ratings]))
+            [regarde.models.rating :as ratings])
+  (:refer-clojure :exclude [find]))
 
 (defn find [user-id exercise-id]
   (first (sql/select entities/rating-sets

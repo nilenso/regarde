@@ -1,6 +1,7 @@
 (ns regarde.models.rating
   (:require [korma.core :as sql]
-            [regarde.models.entities :as entities]))
+            [regarde.models.entities :as entities])
+  (:refer-clojure :exclude [find]))
 
 (defn users-done [exercise]
   (sql/select entities/users

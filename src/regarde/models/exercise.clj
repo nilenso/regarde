@@ -1,7 +1,8 @@
 (ns regarde.models.exercise
   (:require [korma.core :as sql]
             [regarde.models.rating]
-            [regarde.models.entities :as entities]))
+            [regarde.models.entities :as entities])
+  (:refer-clojure :exclude [find]))
 
 (defn create-exercise [exercise-attrs]
   (sql/insert entities/exercises (sql/values (select-keys exercise-attrs [:name]))))
