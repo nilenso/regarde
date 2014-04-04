@@ -11,7 +11,7 @@
 (def google-com-oauth2
   {:authorization-uri (str login-uri "/o/oauth2/auth")
    :access-token-uri (str login-uri "/o/oauth2/token")
-   :redirect-uri "http://localhost:3000/oauth2callback"
+   :redirect-uri (env :oauth-callback-url)
    :client-id (env :google-client-id)
    :client-secret (env :google-client-secret)
    :access-query-param :access_token

@@ -25,6 +25,4 @@
             [ragtime/ragtime.lein "0.3.6"]]
   :hooks [environ.leiningen.hooks]
   :profiles {:production {:env {:production true}}
-             :dev {:env {:development true}}}
-  :ragtime {:migrations ragtime.sql.files/migrations
-            :database "jdbc:postgresql://localhost:5432/regarde_dev"})
+             :dev {:env {:development true}}})
