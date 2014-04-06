@@ -4,6 +4,9 @@
             [ragtime.sql.files]
             [environ.core]))
 
+;; TODO: Ragtime expects the database URL in the form jdbc:postgresql://localhost:5432/db_name?username=foo&password=bar
+;; Korma expects the database URL in the form postgres://foo:bar@localhost:5432/
+;; Need to find a way to have both these libraries use the same database URL format.
 (defn db-name [env]
   (if-let [env-database (environ.core/env :database-url)]
     env-database
