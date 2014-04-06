@@ -26,7 +26,7 @@
    :put-target oauth2-ring/put-target-in-session
    :get-oauth2-data oauth2-ring/get-oauth2-data-from-session
    :put-oauth2-data oauth2-ring/put-oauth2-data-in-session
-   :exclude #".*/sign-in.*"})
+   :exclude #"(.*/sign-in.*)|(.*/repl.*)"})
 
 (defn- google-user-info [token-data]
   (let [response (oauth2/get "https://www.googleapis.com/oauth2/v1/userinfo" token-data)]
