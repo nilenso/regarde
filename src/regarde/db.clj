@@ -4,28 +4,41 @@
             [ragtime.sql.files]
             [environ.core]))
 
-;; TODO: Ragtime expects the database URL in the form jdbc:postgresql://localhost:5432/db_name?username=foo&password=bar
-;; Korma expects the database URL in the form postgres://foo:bar@localhost:5432/
-;; Need to find a way to have both these libraries use the same database URL format.
 (defn db-name [env]
-  (if-let [env-database (environ.core/env :database-url)]
-    env-database
-    (str "jdbc:postgresql://localhost:5432/"
-         (cond
-          (= env :development) "regarde_dev"
-          (= env :test) "regarde_test"
-          (= env :production) "regarde_prod"))))
+  (if-let [database-name (environ.core/env :database-name)]
+    database-name
+    (cond
+     (= env :development) "regarde_dev"
+     (= env :test) "regarde_test"
+     (= env :production) "regarde_prod")))
+
+(defn- ragtime-db-connection [env]
+  (let [user (or (environ.core/env :database-user) "postgres")
+        password (or (environ.core/env :database-password) "")
+        host (or (environ.core/env :database-host) "localhost")
+        subname (str "//" host ":5432/" (db-name env))]
+    (ragtime.sql.database.SqlDatabase. {}
+                                       {:classname "org.postgresql.Driver"
+                                        :subprotocol "postgresql"
+                                        :subname subname
+                                        :user user
+                                        :password password})))
 
 (defn setup [env]
-  (sql/defdb database (db-name env)))
+  (sql/defdb database
+    (sql/postgres {:db (db-name env)
+                   :user (or (environ.core/env :database-user) "postgres")
+                   :password (or (environ.core/env :database-password) "")
+                   :host (or (environ.core/env :database-host) "localhost")
+                   :port "5432"})))
 
 (defn perform-migration [env]
-  (let [connection (connection (db-name env))
+  (let [connection (ragtime-db-connection env)
         migrations (ragtime.sql.files/migrations)]
     (migrate-all connection migrations)))
 
 (defn teardown [env]
-  (let [connection (connection (db-name env))
+  (let [connection (ragtime-db-connection env)
         applied-migrations (reverse (applied-migrations connection))
         migrations (ragtime.sql.files/migrations)]
     (when (> (count applied-migrations) 0)

@@ -83,7 +83,10 @@ which can be very useful for debugging or inspecting live data.
               :google-client-id "client-id"
               :google-client-secret "client-secret"
               :oauth-callback-url "http://localhost:3000/oauth2callback"
-              :regarde-database-url "http://localhost:5432"}}}
+              :database-name "some-custom-database-name"
+              :database-user "johnsmith"
+              :database-password "foo"
+              :database-host "example.com"}}}
 ```
 
 - Check the database configuration in `src/regarde/db.clj`
