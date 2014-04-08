@@ -65,6 +65,10 @@
   (let [users (user/all-except (current-user request))]
     (templates/new-ratings exercise users)))
 
+(defn edit-exercise-ratings [exercise request]
+  (let [users (user/all-except (current-user request))]
+    (templates/edit-ratings exercise users)))
+
 (defn find-or-create-user [request]
   (let [current-user (user/find-or-create-user (authentication/get-google-user request))]
     (assoc (resp/redirect "/") :session {:current-user current-user})))
@@ -94,6 +98,9 @@
   (GET "/exercises/:id/rating_sets/new" [id :as request]
        (let [ex (exercise/find id)]
          (new-exercise-ratings ex request)))
+  (GET "/exercises/:id/rating_sets/edit" [id :as request]
+       (let [ex (exercise/find id)]
+         (edit-exercise-ratings ex request)))
   (POST "/exercises/:id/ratings" [id]
         create-ratings)
   (ANY "*" []
