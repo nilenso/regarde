@@ -24,7 +24,10 @@
                                              :users_id (Integer.  rating-user-id) }])))
 
 (defn update [rating new-rating-value]
-  (println "updating rating"))
+  (sql/update
+   entities/ratings
+   (sql/set-fields {:rating (Integer. new-rating-value)})
+   (sql/where {:id (:id rating)})))
 
 (defn update-or-create [set user-id value]
   (if-let [rating (find (:id set) user-id)]
