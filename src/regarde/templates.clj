@@ -74,9 +74,13 @@
   [:li] (html/content (str (:name user) " / " (:email user))))
 
 (html/deftemplate incomplete-exercise "regarde/templates/incomplete-exercise.html"
-  [exercise users-done users-not-done]
+  [exercise users-done users-not-done current-user]
   [:p :span] (html/content (:name exercise))
   [:p.status] (html/content (str "This exercise is still in progress: "))
   [:ul.not-done] (html/content (map #(rating-user-snippet %) users-not-done))
   [:ul.done] (html/content (map #(rating-user-snippet %) users-done))
-  [:p.new-rating-set :a] (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/new")))
+  [:p.rating-action :a] (if (rating-set/find (:id current-user) (:id exercise))
+                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/edit"))
+                                (html/content "Edit Rating"))
+                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/new"))
+                                (html/content "New Rating"))))

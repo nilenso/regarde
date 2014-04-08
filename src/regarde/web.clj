@@ -66,20 +66,24 @@
     (templates/new-ratings exercise users)))
 
 (defn edit-exercise-ratings [exercise request]
-  (let [users (user/all-except (current-user request))]
-    (templates/edit-ratings exercise users)))
+  (let [users (user/all-except (current-user request))
+        current-user (current-user request)
+        rating-set (rating-set/find (:id current-user) (:id exercise))]
+    (templates/edit-ratings exercise rating-set users)))
 
 (defn find-or-create-user [request]
   (let [current-user (user/find-or-create-user (authentication/get-google-user request))]
     (assoc (resp/redirect "/") :session {:current-user current-user})))
 
-(defn show-exercise [exercise]
+(defn show-exercise [exercise request]
   (let [users (user/all)]
     (if (exercise/complete? (exercise/users-done exercise) users)
       (templates/complete-exercise exercise
                                    (rating-set/summarize exercise))
-      (templates/incomplete-exercise exercise (exercise/users-done exercise)
-                                     (exercise/users-not-done exercise)))))
+      (templates/incomplete-exercise exercise
+                                     (exercise/users-done exercise)
+                                     (exercise/users-not-done exercise)
+                                     (current-user request)))))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -92,9 +96,9 @@
         create-exercise)
   (GET "/exercises" []
        list-exercises)
-  (GET "/exercises/:id" [id]
+  (GET "/exercises/:id" [id :as request]
        (let [ex (exercise/find id)]
-         (show-exercise ex)))
+         (show-exercise ex request)))
   (GET "/exercises/:id/rating_sets/new" [id :as request]
        (let [ex (exercise/find id)]
          (new-exercise-ratings ex request)))
