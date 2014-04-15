@@ -1,6 +1,8 @@
 (ns regarde.templates
   (:require [net.cgrand.enlive-html :as html]
             [regarde.models.exercise :as exercise]
+            [regarde.models.rating :as rating]
+            [regarde.models.rating-set :as rating-set]
             [clojure.math.numeric-tower :as math]))
 
 (html/deftemplate new-user "regarde/templates/new-user.html" [])
@@ -9,12 +11,6 @@
   [:li]
   [user]
   [:li] (html/content (:name user)))
-
-(html/defsnippet rating-snippet "regarde/templates/new-ratings.html"
-  [:li]
-  [user exercise]
-  [:li :span] (html/content (:name user))
-  [:li :input] (html/set-attr :name "rating[]" :name (str "rating[" (:id user) "]")))
 
 (html/deftemplate users "regarde/templates/users.html"
   [users current-user]
@@ -36,11 +32,29 @@
   [:ul] (html/content (map #(exercise-snippet %) exercises))
   [:p :a] (html/set-attr :href "/exercises/new"))
 
+(html/defsnippet new-rating-snippet "regarde/templates/new-ratings.html"
+  [:li]
+  [user]
+  [:li :span] (html/content (:name user))
+  [:li :input] (html/set-attr :name "rating[]" :name (str "rating[" (:id user) "]")))
+
+(html/defsnippet edit-rating-snippet "regarde/templates/edit-ratings.html"
+  [:li]
+  [user rating]
+  [:li :span] (html/content (:name user))
+  [:li :input] (html/set-attr :name "rating[]" :name (str "rating[" (:id user) "]") :value (:rating rating)))
+
 (html/deftemplate new-ratings "regarde/templates/new-ratings.html"
   [exercise users]
   [:div] (html/content (:name exercise))
   [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/ratings"))
-  [:ul] (html/content (map #(rating-snippet % exercise) users)))
+  [:ul] (html/content (map #(new-rating-snippet %) users)))
+
+(html/deftemplate edit-ratings "regarde/templates/edit-ratings.html"
+  [exercise rating-set users]
+  [:div] (html/content (:name exercise))
+  [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/ratings"))
+  [:ul] (html/content (map #(edit-rating-snippet % (rating/find (:id rating-set) (:id %))) users)))
 
 (html/defsnippet summary-user-snippet "regarde/templates/complete-exercise.html"
   [:li.snippet]
@@ -60,9 +74,13 @@
   [:li] (html/content (str (:name user) " / " (:email user))))
 
 (html/deftemplate incomplete-exercise "regarde/templates/incomplete-exercise.html"
-  [exercise users-done users-not-done]
+  [exercise users-done users-not-done current-user]
   [:p :span] (html/content (:name exercise))
   [:p.status] (html/content (str "This exercise is still in progress: "))
   [:ul.not-done] (html/content (map #(rating-user-snippet %) users-not-done))
   [:ul.done] (html/content (map #(rating-user-snippet %) users-done))
-  [:p.new-rating-set :a] (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/new")))
+  [:p.rating-action :a] (if (rating-set/find (:id current-user) (:id exercise))
+                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/edit"))
+                                (html/content "Edit Rating"))
+                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/new"))
+                                (html/content "New Rating"))))
