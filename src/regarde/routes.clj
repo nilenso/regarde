@@ -4,8 +4,7 @@
             [compojure.route :as route]
             [regarde.controllers.exercises :as exercises]
             [regarde.controllers.ratings :as ratings]
-            [regarde.drawbridge :as drawbridge]
-            [regarde.models.exercise :as exercise]))
+            [regarde.drawbridge :as drawbridge]))
 
 (defroutes app
   (ANY "/repl" {:as req}
@@ -19,14 +18,11 @@
   (GET "/exercises" []
        exercises/list-exercises)
   (GET "/exercises/:id" [id :as request]
-       (let [ex (exercise/find id)]
-         (exercises/show-exercise ex request)))
+       (exercises/show-exercise id request))
   (GET "/exercises/:id/rating_sets/new" [id :as request]
-       (let [ex (exercise/find id)]
-         (ratings/new-exercise-ratings ex request)))
+       (ratings/new-exercise-ratings id request))
   (GET "/exercises/:id/rating_sets/edit" [id :as request]
-       (let [ex (exercise/find id)]
-         (ratings/edit-exercise-ratings ex request)))
+       (ratings/edit-exercise-ratings id request))
   (POST "/exercises/:id/ratings" [id]
         ratings/create-ratings)
   (ANY "*" []

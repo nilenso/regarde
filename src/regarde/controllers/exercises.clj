@@ -16,8 +16,9 @@
 (defn list-exercises [request]
   (templates/exercises (exercise/all)))
 
-(defn show-exercise [exercise request]
-  (let [users (user/all)]
+(defn show-exercise [exercise-id request]
+  (let [users (user/all)
+        exercise (exercise/find exercise-id)]
     (if (exercise/complete? (exercise/users-done exercise) users)
       (templates/complete-exercise exercise
                                    (rating-set/summarize exercise))
