@@ -2,6 +2,7 @@
   (:require [clojure.math.numeric-tower :as math]
             [net.cgrand.enlive-html :as html]
             [regarde.models.rating :as rating]
+            [regarde.templates.errors :as t/errors]
             [regarde.models.rating-set :as rating-set]))
 
 (html/deftemplate new-user "regarde/templates/new-user.html" [])
@@ -17,7 +18,9 @@
   [:h1] (html/content  (str "Hi " (:name current-user)))
   [:ul] (html/content (map #(user-snippet %) users)))
 
-(html/deftemplate new-exercise "regarde/templates/new-exercise.html" [])
+(html/deftemplate new-exercise "regarde/templates/new-exercise.html"
+  [errors]
+  [:div.errors] (html/html-content (t/errors/render errors)))
 
 (html/defsnippet exercise-snippet "regarde/templates/exercises.html"
   [:li]

@@ -5,13 +5,24 @@
             [clojure.string :as str])
   (:refer-clojure :exclude [find]))
 
-(defn valid? [exercise]
-  (not (str/blank? (:name exercise))))
+(defn errors [exercise]
+  (let [error-conditions [[#(str/blank? (:name %)) "Name cannot be blank"]
+                          [#(re-find #"Timothy" (:name %)) "Name cannot contain Timothy"]
+                          [#(re-find #"Asif" (:name %)) "Name cannot contain Asif"]]
+        errors           (reduce (fn [errors [f msg]]
+                                   (if (f exercise)
+                                     (cons msg errors)
+                                     errors))
+                                 []
+                                 error-conditions)]
+    (if (empty? errors)
+      nil
+      errors)))
 
 (defn create-exercise [exercise-attrs]
-  (if (valid? exercise-attrs)
-    (sql/insert entities/exercises (sql/values (select-keys exercise-attrs [:name])))
-    false))
+  (if-let [errors (errors exercise-attrs)]
+    (assoc exercise-attrs :errors errors)
+    (sql/insert entities/exercises (sql/values (select-keys exercise-attrs [:name])))))
 
 (defn all []
   (sql/select entities/exercises))

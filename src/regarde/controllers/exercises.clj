@@ -7,12 +7,13 @@
             [ring.util.response :as resp]))
 
 (defn new-exercise [request]
-  (templates/new-exercise))
+  (templates/new-exercise []))
 
 (defn create-exercise [request]
-  (if (exercise/create-exercise (:params request))
-    (resp/redirect "/exercises")
-    (templates/new-exercise)))
+  (let [exercise (exercise/create-exercise (:params request))]
+    (if-let [errors (:errors exercise)]     
+      (templates/new-exercise errors)
+      (resp/redirect "/exercises"))))
 
 (defn list-exercises [request]
   (templates/exercises (exercise/all)))
