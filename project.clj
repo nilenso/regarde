@@ -24,5 +24,6 @@
             [lein-expectations "0.0.7"]
             [ragtime/ragtime.lein "0.3.6"]]
   :hooks [environ.leiningen.hooks]
+  :aliases {"slamhound" ["run" "-m" "slam.hound"]}
   :profiles {:production {:env {:production true}}
              :dev {:env {:development true}}})
