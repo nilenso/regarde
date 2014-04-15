@@ -10,8 +10,9 @@
   (templates/new-exercise))
 
 (defn create-exercise [request]
-  (exercise/create-exercise (:params request))
-  (resp/redirect "/exercises"))
+  (if (exercise/create-exercise (:params request))
+    (resp/redirect "/exercises")
+    (templates/new-exercise)))
 
 (defn list-exercises [request]
   (templates/exercises (exercise/all)))

@@ -1,11 +1,17 @@
 (ns regarde.models.exercise
   (:require [korma.core :as sql]
             [regarde.models.entities :as entities]
-            [regarde.models.rating :as rating])
+            [regarde.models.rating :as rating]
+            [clojure.string :as str])
   (:refer-clojure :exclude [find]))
 
+(defn valid? [exercise]
+  (not (str/blank? (:name exercise))))
+
 (defn create-exercise [exercise-attrs]
-  (sql/insert entities/exercises (sql/values (select-keys exercise-attrs [:name]))))
+  (if (valid? exercise-attrs)
+    (sql/insert entities/exercises (sql/values (select-keys exercise-attrs [:name])))
+    false))
 
 (defn all []
   (sql/select entities/exercises))
