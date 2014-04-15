@@ -1,9 +1,8 @@
 (ns regarde.authentication
-  (:require
-    [cheshire.core :refer [parse-string]]
-    [clj-oauth2.client :as oauth2]
-    [clj-oauth2.ring :as oauth2-ring]
-    [environ.core :refer [env]]))
+  (:require [cheshire.core :refer [parse-string]]
+            [clj-oauth2.client :as oauth2]
+            [clj-oauth2.ring :as oauth2-ring]
+            [environ.core :refer [env]]))
 
 (def login-uri
   "https://accounts.google.com")

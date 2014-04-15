@@ -1,9 +1,8 @@
 (ns regarde.templates
-  (:require [net.cgrand.enlive-html :as html]
-            [regarde.models.exercise :as exercise]
+  (:require [clojure.math.numeric-tower :as math]
+            [net.cgrand.enlive-html :as html]
             [regarde.models.rating :as rating]
-            [regarde.models.rating-set :as rating-set]
-            [clojure.math.numeric-tower :as math]))
+            [regarde.models.rating-set :as rating-set]))
 
 (html/deftemplate new-user "regarde/templates/new-user.html" [])
 

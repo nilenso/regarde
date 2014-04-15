@@ -1,7 +1,7 @@
 (ns regarde.models.exercise
   (:require [korma.core :as sql]
-            [regarde.models.rating]
-            [regarde.models.entities :as entities])
+            [regarde.models.entities :as entities]
+            [regarde.models.rating :as rating])
   (:refer-clojure :exclude [find]))
 
 (defn create-exercise [exercise-attrs]
@@ -11,10 +11,10 @@
   (sql/select entities/exercises))
 
 (defn users-done [exercise]
-  (regarde.models.rating/users-done exercise))
+  (rating/users-done exercise))
 
 (defn users-not-done [exercise]
-  (regarde.models.rating/users-not-done exercise))
+  (rating/users-not-done exercise))
 
 (defn complete? [users-completed users]
   (let [[all-users completed-users]

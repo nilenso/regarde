@@ -1,8 +1,7 @@
 (ns regarde.db
   (:require [korma.db :as sql]
-            [ragtime.core :refer [connection migrate-all applied-migrations]]
-            [ragtime.sql.files]
-            [environ.core]))
+            [ragtime.core :refer [applied-migrations migrate-all]]
+            [ragtime.sql.files]))
 
 (defn db-name [env]
   (if-let [database-name (environ.core/env :database-name)]

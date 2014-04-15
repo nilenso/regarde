@@ -1,8 +1,8 @@
 (ns regarde.drawbridge
-  (require [ring.middleware.basic-authentication :as basic]
-           [ring.middleware.session :as session]
-           [cemerick.drawbridge :as drawbridge]
-           [environ.core :refer [env]]))
+  (:require [cemerick.drawbridge :as drawbridge]
+            [environ.core :refer [env]]
+            [ring.middleware.basic-authentication :as basic]
+            [ring.middleware.session :as session]))
 
 (declare authenticated?)
 

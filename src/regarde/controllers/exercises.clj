@@ -1,10 +1,10 @@
 (ns regarde.controllers.exercises
-  (require [regarde.templates :as templates]
-           [regarde.models.exercise :as exercise]
-           [regarde.models.user :as user]
-           [regarde.models.rating-set :as rating-set]
-           [ring.util.response :as resp]
-           [regarde.helpers :as helpers]))
+  (:require [regarde.helpers :as helpers]
+            [regarde.models.exercise :as exercise]
+            [regarde.models.rating-set :as rating-set]
+            [regarde.models.user :as user]
+            [regarde.templates :as templates]
+            [ring.util.response :as resp]))
 
 (defn new-exercise [request]
   (templates/new-exercise))

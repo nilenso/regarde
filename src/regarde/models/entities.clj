@@ -1,5 +1,5 @@
 (ns regarde.models.entities
-  (:require [korma.core :refer [defentity has-many belongs-to table select with where]]))
+  (:require [korma.core :refer [belongs-to defentity has-many table]]))
 
 (declare rating-sets ratings exercises)
 

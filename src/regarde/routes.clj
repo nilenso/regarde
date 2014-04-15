@@ -1,11 +1,11 @@
 (ns regarde.routes
-  (require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
-           [compojure.route :as route]
-           [clojure.java.io :as io]
-           [regarde.controllers.exercises :as exercises]
-           [regarde.controllers.ratings :as ratings]
-           [regarde.models.exercise :as exercise]
-           [regarde.drawbridge :as drawbridge]))
+  (:require [clojure.java.io :as io]
+            [compojure.core :refer [ANY GET POST defroutes]]
+            [compojure.route :as route]
+            [regarde.controllers.exercises :as exercises]
+            [regarde.controllers.ratings :as ratings]
+            [regarde.drawbridge :as drawbridge]
+            [regarde.models.exercise :as exercise]))
 
 (defroutes app
   (ANY "/repl" {:as req}

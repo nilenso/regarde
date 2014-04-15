@@ -1,6 +1,5 @@
 (ns regarde.models.rating-set
-  (:require [regarde.models.exercise :as exercise]
-            [korma.core :as sql]
+  (:require [korma.core :as sql]
             [regarde.models.entities :as entities]
             [regarde.models.rating :as ratings])
   (:refer-clojure :exclude [find]))

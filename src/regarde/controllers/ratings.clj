@@ -1,10 +1,10 @@
 (ns regarde.controllers.ratings
-  (require [regarde.helpers :as helpers]
-           [regarde.models.rating-set :as rating-set]
-           [regarde.models.rating :as rating]
-           [regarde.models.user :as user]
-           [ring.util.response :as resp]
-           [regarde.templates :as templates]))
+  (:require [regarde.helpers :as helpers]
+            [regarde.models.rating :as rating]
+            [regarde.models.rating-set :as rating-set]
+            [regarde.models.user :as user]
+            [regarde.templates :as templates]
+            [ring.util.response :as resp]))
 
 (defn create-ratings [request]
   (let [current-user (helpers/current-user request)]
