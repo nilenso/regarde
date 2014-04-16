@@ -39,7 +39,7 @@
 (defn fold-sum [left-rating right-rating]
   (assoc left-rating :rating (+ (:rating left-rating) (:rating right-rating))))
 
-(defn aggregate-ratings 
+(defn aggregate-ratings
   "Given collection of ratings, take their average."
   [ratings]
   (let [summed-rating (reduce fold-sum ratings)
@@ -47,7 +47,7 @@
         ratings-average (update-in summed-rating [:rating] #(/ % count))]
     ratings-average))
 
-(defn summarize-rating-sets 
+(defn summarize-rating-sets
   "Take a collection of ratings, group them by user,
    and average all the ratings for each user."
   [ratings]

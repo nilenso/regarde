@@ -5,7 +5,7 @@
             [regarde.models.errors :as errors])
   (:refer-clojure :exclude [find]))
 
-(def errors (errors/generate-error-check [[#(str/blank? (:rating %)) "Rating cannot be blank. "]]))
+(def errors (errors/generate-error-check [[#(str/blank? (:rating %)) "Rating cannot be blank."]]))
 
 (defn users-done [exercise]
   (sql/select entities/users
