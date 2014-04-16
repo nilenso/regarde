@@ -10,6 +10,14 @@
                      (sql/where {:exercises_id (Integer. exercise-id)
                                  :users_id (Integer. user-id)}))))
 
+(defn update [rating-set attrs]
+  (db/transaction
+   (doseq [rating-attrs (:ratings attrs)]
+     (let [rating (ratings/find (:id rating-set) (:user-id rating-attrs))
+           updated-rating (ratings/update rating rating-attrs)]
+       (if (:errors updated-rating)
+         (db/rollback))))))
+
 (defn create [attrs]
   (db/transaction
    (let [rating-set (sql/insert

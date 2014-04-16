@@ -18,11 +18,13 @@
     (resp/redirect "/")))
 
 (defn update [request]
-  (let [current-user (helpers/current-user request)]
-    (let [set (rating-set/find (:id current-user) (:exercise-id (:params request))) ]
-      (doseq [[user-id rating] (:rating (:params request))]
-        (rating/update-or-create set user-id {:rating rating}))))
-  (resp/redirect "/"))
+  (let [current-user (helpers/current-user request)
+        set (rating-set/find (:id current-user) (:exercise-id (:params request)))
+        ratings (map
+                 (fn [[user-id rating]] {:user-id user-id :rating rating})
+                 (:rating (:params request)))]
+    (rating-set/update set {:ratings ratings})
+    (resp/redirect "/")))
 
 (defn new [exercise-id request]
   (let [users (user/all-except (helpers/current-user request))

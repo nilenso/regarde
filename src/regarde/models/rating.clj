@@ -30,10 +30,12 @@
                                                :users_id (Integer.  (:user-id attrs)) }]))))
 
 (defn update [rating attrs]
-  (sql/update
-   entities/ratings
-   (sql/set-fields {:rating (Integer. (:rating attrs))})
-   (sql/where {:id (:id rating)})))
+  (if-let [errors (errors attrs)]
+    (assoc attrs :errors errors)
+    (sql/update
+     entities/ratings
+     (sql/set-fields {:rating (Integer. (:rating attrs))})
+     (sql/where {:id (:id rating)}))))
 
 (defn update-or-create [set user-id attrs]
   (if-let [errors (errors attrs)]
