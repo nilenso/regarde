@@ -49,13 +49,13 @@
 (html/deftemplate new-ratings "regarde/templates/new-ratings.html"
   [exercise users]
   [:div] (html/content (:name exercise))
-  [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/ratings"))
+  [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/rating_set"))
   [:ul] (html/content (map #(new-rating-snippet %) users)))
 
 (html/deftemplate edit-ratings "regarde/templates/edit-ratings.html"
   [exercise rating-set users]
   [:div] (html/content (:name exercise))
-  [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/ratings"))
+  [:form] (html/set-attr :action (str "/exercises/" (:id exercise) "/rating_set"))
   [:ul] (html/content (map #(edit-rating-snippet % (rating/find (:id rating-set) (:id %))) users)))
 
 (html/defsnippet summary-user-snippet "regarde/templates/complete-exercise.html"
@@ -82,7 +82,7 @@
   [:ul.not-done] (html/content (map #(rating-user-snippet %) users-not-done))
   [:ul.done] (html/content (map #(rating-user-snippet %) users-done))
   [:p.rating-action :a] (if (rating-set/find (:id current-user) (:id exercise))
-                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/edit"))
+                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_set/edit"))
                                 (html/content "Edit Rating"))
-                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_sets/new"))
+                          (html/do-> (html/set-attr :href (str "/exercises/" (:id exercise) "/rating_set/new"))
                                 (html/content "New Rating"))))
