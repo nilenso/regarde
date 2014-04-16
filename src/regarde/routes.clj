@@ -1,6 +1,6 @@
 (ns regarde.routes
   (:require [clojure.java.io :as io]
-            [compojure.core :refer [ANY GET POST defroutes]]
+            [compojure.core :refer [ANY GET POST PUT defroutes]]
             [compojure.route :as route]
             [regarde.controllers.exercises :as exercises]
             [regarde.controllers.rating-sets :as rating-sets]
@@ -23,7 +23,9 @@
        (rating-sets/new id request))
   (GET "/exercises/:id/rating_set/edit" [id :as request]
        (rating-sets/edit id request))
-  (POST "/exercises/:id/rating_set" [id]
+  (POST "/exercises/:exercise-id/rating_set" []
         rating-sets/create)
+  (PUT "/exercises/:exercise-id/rating_set" []
+       rating-sets/update)
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
