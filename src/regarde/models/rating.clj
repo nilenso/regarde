@@ -23,9 +23,11 @@
                                  :users_id (Integer. user-id)}))))
 
 (defn create [attrs]
-  (sql/insert entities/ratings (sql/values [{:rating (Integer.  (:rating attrs))
-                                             :rating_sets_id (Integer. (:rating-sets-id attrs))
-                                             :users_id (Integer.  (:users-id attrs)) }])))
+  (if-let [errors (errors attrs)]
+    (assoc attrs :errors errors)
+    (sql/insert entities/ratings (sql/values [{:rating (Integer.  (:rating attrs))
+                                               :rating_sets_id (Integer. (:rating-set-id attrs))
+                                               :users_id (Integer.  (:user-id attrs)) }]))))
 
 (defn update [rating attrs]
   (sql/update

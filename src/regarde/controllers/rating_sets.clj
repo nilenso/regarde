@@ -8,11 +8,14 @@
             [ring.util.response :as resp]))
 
 (defn create [request]
-  (let [current-user (helpers/current-user request)]
-    (let [set (rating-set/create (:id current-user) (:exercise-id (:params request))) ]
-      (doseq [[user-id rating] (:rating (:params request))]
-        (rating/update-or-create set user-id {:rating rating}))))
-  (resp/redirect "/"))
+  (let [current-user (helpers/current-user request)
+        ratings (map
+                 (fn [[user-id rating]] {:user-id user-id :rating rating})
+                 (:rating (:params request)))]
+    (rating-set/create {:user-id (:id current-user)
+                        :exercise-id (:exercise-id (:params request))
+                        :ratings ratings})
+    (resp/redirect "/")))
 
 (defn update [request]
   (let [current-user (helpers/current-user request)]

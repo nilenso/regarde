@@ -1,5 +1,6 @@
 (ns regarde.models.rating-set
   (:require [korma.core :as sql]
+            [korma.db :as db]
             [regarde.models.entities :as entities]
             [regarde.models.rating :as ratings])
   (:refer-clojure :exclude [find]))
@@ -9,16 +10,23 @@
                      (sql/where {:exercises_id (Integer. exercise-id)
                                  :users_id (Integer. user-id)}))))
 
-(defn create [user-id exercise-id]
-  (sql/insert entities/rating-sets (sql/values [{:users_id (Integer.  user-id)
-                                                 :exercises_id (Integer. exercise-id)}])))
+(defn create [attrs]
+  (db/transaction
+   (let [rating-set (sql/insert
+                     entities/rating-sets
+                     (sql/values [{:users_id (Integer.  (:user-id attrs))
+                                   :exercises_id (Integer. (:exercise-id attrs))}]))]
+     (doseq [rating-attrs (:ratings attrs)]
+       (let [rating (ratings/create (assoc rating-attrs :rating-set-id (:id rating-set)))]
+         (if (:errors rating)
+           (db/rollback)))))))
 
 (defn find-or-create [user-id exercise-id]
   (if-let [set (find user-id exercise-id)]
     set
     (create user-id exercise-id)))
 
-(defn normalize-rating-sets 
+(defn normalize-rating-sets
   "Take a collection of rating sets, normalize the ratings of each set,
    and return a single collection comprising all the normalized ratings."
   [rating-sets]
