@@ -10,8 +10,8 @@
 (defn create-ratings [request]
   (let [current-user (helpers/current-user request)]
     (let [set (rating-set/find-or-create (:id current-user) (:id (:params request))) ]
-      (doseq [r (:rating (:params request))]
-        (rating/update-or-create set (first r) (second r)))))
+      (doseq [[user-id rating] (:rating (:params request))]
+        (rating/update-or-create set user-id {:rating rating}))))
   (resp/redirect "/"))
 
 (defn new-exercise-ratings [exercise-id request]
